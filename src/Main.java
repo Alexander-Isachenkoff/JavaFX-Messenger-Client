@@ -15,6 +15,9 @@ public class Main {
         System.out.println("Сообщения:");
         while (true) {
             String s = scanner.nextLine();
+            if (s.trim().isEmpty()) {
+                break;
+            }
             TextMessage message = new TextMessage(name, s);
             post.post(message);
         }
