@@ -1,31 +1,21 @@
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.Socket;
 
-public class Client {
+public abstract class Client implements Post {
 
     public static final String ADDRESS = "127.0.0.1";
     public static final int PORT = 11111;
+    private Socket socket;
 
-    public void post(Object object) {
-        try {
-            Socket socket = new Socket(ADDRESS, PORT);
-            ObjectOutputStream os = new ObjectOutputStream(socket.getOutputStream());
-            os.writeObject(object);
-            os.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+    protected Socket getSocket() {
+        if (socket == null || socket.isClosed()) {
+            try {
+                socket = new Socket(ADDRESS, PORT);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
-    }
-
-    public void postTextMessage(TextMessage textMessage) {
-        try {
-            Socket socket = new Socket(ADDRESS, PORT);
-            ObjectOutputStream os = new ObjectOutputStream(socket.getOutputStream());
-            os.writeObject(textMessage);
-            os.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        return socket;
     }
 
 }
