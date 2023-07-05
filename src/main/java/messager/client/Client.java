@@ -1,4 +1,4 @@
-package client;
+package messager.client;
 
 import java.io.IOException;
 import java.net.Socket;

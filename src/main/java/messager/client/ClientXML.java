@@ -1,4 +1,4 @@
-package client;
+package messager.client;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

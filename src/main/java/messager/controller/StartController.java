@@ -1,14 +1,14 @@
-package controller;
+package messager.controller;
 
-import client.Client;
-import client.ClientXML;
-import entities.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import sun.security.tools.keytool.Main;
+import messager.Main;
+import messager.client.Client;
+import messager.client.ClientXML;
+import messager.entities.User;
 
 import java.io.IOException;
 
@@ -25,10 +25,12 @@ public class StartController {
         User user = new User(nameField.getText(), passwordField.getText());
         client.post(user);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("messages.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/messages.fxml"));
         Scene scene;
         try {
             scene = new Scene(fxmlLoader.load());
+            MessagesController controller = fxmlLoader.getController();
+            controller.setUser(user);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

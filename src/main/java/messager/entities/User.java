@@ -1,4 +1,4 @@
-package entities;
+package messager.entities;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;

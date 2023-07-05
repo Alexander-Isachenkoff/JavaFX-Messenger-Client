@@ -1,8 +1,8 @@
-import entities.TextMessage;
-import entities.User;
-import org.junit.jupiter.api.Test;
+package messager.client;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import messager.entities.TextMessage;
+import messager.entities.User;
+import org.junit.jupiter.api.Test;
 
 class TextMessageTest {
 
@@ -15,6 +15,6 @@ class TextMessageTest {
                         "    name = 'Me',\n" +
                         "    message = 'Hello, World!'\n" +
                         "}";
-        assertEquals(expected, message.toString());
+        Assertions.assertEquals(expected, message.toString());
     }
 }

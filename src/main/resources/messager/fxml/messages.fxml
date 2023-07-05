@@ -7,13 +7,13 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controller.MessagesController"
+      fx:controller="messager.controller.MessagesController"
       spacing="10">
     <padding>
         <Insets top="10" bottom="10" left="10" right="10"/>
     </padding>
 
-    <TextArea prefWidth="320" prefHeight="60" wrapText="true" maxWidth="Infinity" maxHeight="Infinity"
+    <TextArea fx:id="textArea" prefWidth="320" prefHeight="60" wrapText="true" maxWidth="Infinity" maxHeight="Infinity"
               VBox.vgrow="ALWAYS"/>
 
     <HBox alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS">

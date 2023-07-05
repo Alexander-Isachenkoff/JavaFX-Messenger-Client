@@ -1,6 +1,7 @@
-import client.ClientSerializable;
-import entities.TextMessage;
-import entities.User;
+package messager.client;
+
+import messager.entities.TextMessage;
+import messager.entities.User;
 import org.junit.jupiter.api.Test;
 
 public class ClientSerializableTest {
