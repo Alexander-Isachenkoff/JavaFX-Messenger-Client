@@ -1,3 +1,6 @@
+import entities.TextMessage;
+import entities.User;
+
 import java.util.Scanner;
 
 public class Main {
@@ -7,10 +10,16 @@ public class Main {
         postMessages(client);
     }
 
-    private static void postMessages(Post post) {
+    private static void postMessages(Poster poster) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Имя: ");
         String name = scanner.nextLine();
+        System.out.print("Пароль: ");
+        String password = scanner.nextLine();
+
+        User user = new User(name, password);
+
+        poster.post(user);
 
         System.out.println("Сообщения:");
         while (true) {
@@ -18,8 +27,8 @@ public class Main {
             if (s.trim().isEmpty()) {
                 break;
             }
-            TextMessage message = new TextMessage(name, s);
-            post.post(message);
+            TextMessage message = new TextMessage(user, s);
+            poster.post(message);
         }
     }
 

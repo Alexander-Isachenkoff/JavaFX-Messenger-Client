@@ -1,3 +1,3 @@
-public interface Post {
+public interface Poster {
     <T> void post(T object);
 }

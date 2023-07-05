@@ -1,7 +1,7 @@
 import java.io.IOException;
 import java.net.Socket;
 
-public abstract class Client implements Post {
+public abstract class Client implements Poster {
 
     public static final String ADDRESS = "127.0.0.1";
     public static final int PORT = 11111;
