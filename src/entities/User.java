@@ -1,14 +1,14 @@
 package entities;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class User {
 
-    @XmlElement
+    @XmlAttribute
     private String name;
-    @XmlElement
+    @XmlAttribute
     private String password;
 
     public User() {
@@ -23,16 +23,9 @@ public class User {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
 }
