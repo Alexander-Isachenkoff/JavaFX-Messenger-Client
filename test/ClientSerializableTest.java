@@ -1,3 +1,4 @@
+import client.ClientSerializable;
 import entities.TextMessage;
 import entities.User;
 import org.junit.jupiter.api.Test;

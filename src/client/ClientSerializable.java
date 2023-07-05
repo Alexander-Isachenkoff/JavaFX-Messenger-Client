@@ -1,3 +1,5 @@
+package client;
+
 import java.io.ObjectOutputStream;
 
 public class ClientSerializable extends Client {

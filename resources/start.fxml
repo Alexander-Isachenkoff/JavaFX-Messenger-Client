@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.StartController"
+      spacing="10"
+      prefWidth="300">
+    <padding>
+        <Insets top="10" bottom="10" left="10" right="10"/>
+    </padding>
+
+    <GridPane hgap="8" vgap="8">
+        <Label GridPane.rowIndex="0" text="Имя"/>
+        <Label GridPane.rowIndex="1" text="Пароль"/>
+        <TextField fx:id="nameField" GridPane.rowIndex="0" maxWidth="Infinity" GridPane.hgrow="ALWAYS"
+                   GridPane.columnIndex="1"
+                   promptText="Имя"/>
+        <TextField fx:id="passwordField" GridPane.rowIndex="1" maxWidth="Infinity" GridPane.hgrow="ALWAYS"
+                   GridPane.columnIndex="1"
+                   promptText="Пароль"/>
+    </GridPane>
+
+    <HBox alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS">
+        <Button text="Войти" prefWidth="70" onAction="#onSignIn"/>
+    </HBox>
+
+</VBox>

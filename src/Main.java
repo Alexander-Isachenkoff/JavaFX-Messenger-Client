@@ -1,35 +1,20 @@
-import entities.TextMessage;
-import entities.User;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import java.util.Scanner;
-
-public class Main {
+public class Main extends Application {
 
     public static void main(String[] args) {
-        Client client = new ClientXML();
-        postMessages(client);
+        launch();
     }
 
-    private static void postMessages(Poster poster) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Имя: ");
-        String name = scanner.nextLine();
-        System.out.print("Пароль: ");
-        String password = scanner.nextLine();
-
-        User user = new User(name, password);
-
-        poster.post(user);
-
-        System.out.println("Сообщения:");
-        while (true) {
-            String s = scanner.nextLine();
-            if (s.trim().isEmpty()) {
-                break;
-            }
-            TextMessage message = new TextMessage(user, s);
-            poster.post(message);
-        }
+    @Override
+    public void start(Stage stage) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("start.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("Client");
+        stage.setScene(scene);
+        stage.show();
     }
-
 }
