@@ -1,17 +1,26 @@
 package messager.controller;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.TextMessage;
 import messager.entities.User;
+import messager.requests.UsersListRequest;
+import messager.requests.UsersListResponse;
+import messager.server.Server;
 
 public class MessagesController {
 
-    private final Client client = new ClientXML();
+    @FXML
+    private ListView<User> usersList;
+
     private User user;
+    private final Client client = new ClientXML();
 
     @FXML
     private TextArea textArea;
@@ -29,6 +38,16 @@ public class MessagesController {
                 }
             }
         });
+
+        usersList.setCellFactory(new UserListCellFactory());
+
+        loadUsers();
+    }
+
+    private void loadUsers() {
+        client.post(new UsersListRequest());
+        UsersListResponse response = new Server().accept(UsersListResponse.class);
+        usersList.setItems(FXCollections.observableArrayList(response.getUsers()));
     }
 
     public void onSend() {

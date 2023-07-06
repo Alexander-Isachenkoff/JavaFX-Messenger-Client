@@ -3,7 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox alignment="BOTTOM_RIGHT" prefHeight="250.0" prefWidth="450.0" stylesheets="@../css/style.css"
+<VBox alignment="BOTTOM_RIGHT" prefHeight="540.0" prefWidth="900.0" stylesheets="@../css/style.css"
       xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="messager.controller.SignInController">
     <children>

@@ -16,10 +16,44 @@
     -fx-translate-y: 1;
 }
 
+
+
 .text-field, .text-area {
     -fx-background-radius: 4;
     -fx-border-radius: 4;
     -fx-background-color: white;
     -fx-border-color: lightgray;
     -fx-highlight-fill: rgb(81, 129, 184);
+}
+
+
+.users-list {
+    -fx-background-color: #f2f2f2;
+    -fx-border: none;
+}
+
+.users-list .list-cell {
+    -fx-padding: 0;
+    -fx-background-color: #f2f2f2;
+}
+
+.users-list .list-cell:hover {
+    -fx-background-color: #dadada;
+}
+
+.users-list .list-cell:pressed {
+    -fx-background-color: #c2c2c2;
+}
+
+.users-list .list-cell:selected {
+    -fx-text-fill: black;
+    -fx-background-color: rgb(81, 129, 184);
+}
+
+.users-list .scroll-bar {
+    -fx-background-color: none;
+}
+
+.users-list .increment-button, .users-list .decrement-button, .users-list .corner {
+    -fx-background-color: none;
 }
