@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -29,10 +28,8 @@
                     <RowConstraints/>
                 </rowConstraints>
             </GridPane>
-
-            <HBox alignment="BOTTOM_CENTER">
-                <Button onAction="#onSignIn" prefWidth="70" text="Войти"/>
-            </HBox>
+            <Button onAction="#onSignIn" prefWidth="70" text="Войти"/>
+            <Label fx:id="responseLabel" text="Label"/>
 
         </VBox>
         <Button disable="true" onAction="#onSignIn" text="Регистрация"/>

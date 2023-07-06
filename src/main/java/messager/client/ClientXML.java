@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream;
 public class ClientXML extends Client {
 
     @Override
-    public <T> void post(T object) {
+    public void post(Object object) {
         JAXBContext context;
         try {
             context = JAXBContext.newInstance(object.getClass());
