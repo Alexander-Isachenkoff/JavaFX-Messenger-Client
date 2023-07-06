@@ -5,19 +5,17 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="messager.controller.MessagesController"
-      spacing="10">
+<VBox prefHeight="292.0" prefWidth="465.0" spacing="10" stylesheets="@../css/style.css"
+      xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="messager.controller.MessagesController">
     <padding>
-        <Insets top="10" bottom="10" left="10" right="10"/>
+        <Insets bottom="10" left="10" right="10" top="10"/>
     </padding>
 
-    <TextArea fx:id="textArea" prefWidth="320" prefHeight="60" wrapText="true" maxWidth="Infinity" maxHeight="Infinity"
-              VBox.vgrow="ALWAYS"/>
+    <TextArea fx:id="textArea" maxWidth="Infinity" prefHeight="80.0" prefWidth="320.0" wrapText="true"/>
 
-    <HBox alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS">
-        <Button text="Отправить" prefWidth="80" onAction="#onSend"/>
+    <HBox alignment="BOTTOM_CENTER">
+        <Button onAction="#onSend" prefWidth="80" text="Отправить"/>
     </HBox>
 
 </VBox>

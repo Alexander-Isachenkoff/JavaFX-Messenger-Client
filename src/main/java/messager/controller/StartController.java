@@ -26,18 +26,17 @@ public class StartController {
         client.post(user);
 
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/messages.fxml"));
-        Scene scene;
+        Scene newScene;
         try {
-            scene = new Scene(fxmlLoader.load());
+            newScene = new Scene(fxmlLoader.load());
             MessagesController controller = fxmlLoader.getController();
             controller.setUser(user);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Stage stage = new Stage();
-        stage.setTitle("Messages");
-        stage.setScene(scene);
-        stage.show();
+
+        Stage stage = (Stage) nameField.getScene().getWindow();
+        NodeUtils.setScene(stage, newScene);
     }
 
 }

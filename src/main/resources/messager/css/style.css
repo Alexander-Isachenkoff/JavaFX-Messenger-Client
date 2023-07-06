@@ -1,0 +1,25 @@
+.button {
+    -fx-background-color: rgb(81, 129, 184);
+    -fx-background-radius: 4;
+    -fx-text-fill: white;
+}
+
+.button:hover {
+    -fx-background-color: rgb(102, 144, 193);
+}
+
+.button:pressed {
+    -fx-background-color: rgb(81, 129, 184);
+}
+
+.button:pressed .text {
+    -fx-translate-y: 1;
+}
+
+.text-field, .text-area {
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-background-color: white;
+    -fx-border-color: lightgray;
+    -fx-highlight-fill: rgb(81, 129, 184);
+}
