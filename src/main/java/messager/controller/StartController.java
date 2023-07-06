@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import messager.Main;
 import messager.client.Client;
@@ -21,7 +23,17 @@ public class StartController {
     private final Client client = new ClientXML();
 
     @FXML
+    private void initialize() {
+        nameField.setOnKeyPressed(this::onEnterPressed);
+        passwordField.setOnKeyPressed(this::onEnterPressed);
+    }
+
+    @FXML
     private void onSignIn() {
+        signIn();
+    }
+
+    private void signIn() {
         User user = new User(nameField.getText(), passwordField.getText());
         client.post(user);
 
@@ -39,4 +51,9 @@ public class StartController {
         NodeUtils.setScene(stage, newScene);
     }
 
+    private void onEnterPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            signIn();
+        }
+    }
 }
