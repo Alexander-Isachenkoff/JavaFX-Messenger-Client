@@ -14,7 +14,7 @@ import messager.entities.User;
 
 import java.io.IOException;
 
-public class StartController {
+public class SignInController {
     @FXML
     private TextField nameField;
     @FXML

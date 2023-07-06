@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <VBox alignment="BOTTOM_RIGHT" prefHeight="250.0" prefWidth="450.0" stylesheets="@../css/style.css"
       xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="messager.controller.StartController">
+      fx:controller="messager.controller.SignInController">
     <children>
         <VBox alignment="CENTER" fillWidth="false" spacing="10" VBox.vgrow="ALWAYS">
             <padding>
