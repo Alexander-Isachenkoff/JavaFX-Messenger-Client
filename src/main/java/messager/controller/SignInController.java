@@ -76,13 +76,29 @@ public class SignInController {
             throw new RuntimeException(e);
         }
 
-        Stage stage = (Stage) nameField.getScene().getWindow();
-        NodeUtils.setScene(stage, newScene);
+        NodeUtils.setScene(getStage(), newScene);
     }
 
     private void onEnterPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             postLoginData();
         }
+    }
+
+    @FXML
+    private void onSignUp() {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/sign_up.fxml"));
+        Scene newScene;
+        try {
+            newScene = new Scene(fxmlLoader.load());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        NodeUtils.setScene(getStage(), newScene);
+    }
+
+    private Stage getStage() {
+        return (Stage) nameField.getScene().getWindow();
     }
 }

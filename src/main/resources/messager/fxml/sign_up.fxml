@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <VBox alignment="BOTTOM_RIGHT" prefHeight="250.0" prefWidth="450.0" stylesheets="@../css/style.css"
       xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="messager.controller.SignInController">
+      fx:controller="messager.controller.SignUpController">
     <children>
         <VBox alignment="CENTER" fillWidth="false" spacing="10" VBox.vgrow="ALWAYS">
             <padding>
@@ -29,10 +29,10 @@
                 </rowConstraints>
             </GridPane>
             <Label fx:id="responseLabel" text="Label"/>
-            <Button onAction="#onSignIn" prefWidth="70" text="Войти"/>
+            <Button onAction="#onSignUp" text="Зарегистрировать"/>
 
         </VBox>
-        <Button onAction="#onSignUp" text="Регистрация"/>
+        <Button onAction="#onSignIn" prefWidth="70" text="Вход"/>
     </children>
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
