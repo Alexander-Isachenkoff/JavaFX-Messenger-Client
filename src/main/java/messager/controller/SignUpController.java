@@ -12,7 +12,7 @@ import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.User;
 import messager.requests.SignUpRequest;
-import messager.requests.SignUpResponse;
+import messager.response.SignUpResponse;
 import messager.server.Server;
 
 import java.io.IOException;

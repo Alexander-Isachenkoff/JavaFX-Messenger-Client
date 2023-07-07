@@ -11,9 +11,9 @@ import messager.client.ClientXML;
 import messager.entities.TextMessage;
 import messager.entities.User;
 import messager.requests.MessagesRequest;
-import messager.requests.MessagesResponse;
 import messager.requests.UsersListRequest;
-import messager.requests.UsersListResponse;
+import messager.response.MessagesResponse;
+import messager.response.UsersListResponse;
 import messager.server.Server;
 
 import javax.swing.*;

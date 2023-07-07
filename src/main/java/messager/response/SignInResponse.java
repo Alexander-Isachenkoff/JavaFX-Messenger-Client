@@ -1,4 +1,4 @@
-package messager.requests;
+package messager.response;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

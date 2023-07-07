@@ -14,7 +14,7 @@ import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.User;
 import messager.requests.SignInRequest;
-import messager.requests.SignInResponse;
+import messager.response.SignInResponse;
 import messager.server.Server;
 
 import java.io.IOException;
