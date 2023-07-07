@@ -1,4 +1,4 @@
-package messager.controller;
+package messager.view;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -6,6 +6,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
 import messager.Main;
+import messager.controller.UserCellController;
 import messager.entities.User;
 
 import java.io.IOException;

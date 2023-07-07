@@ -15,6 +15,8 @@ import messager.requests.UsersListRequest;
 import messager.response.MessagesResponse;
 import messager.response.UsersListResponse;
 import messager.server.Server;
+import messager.view.MessageCellFactory;
+import messager.view.UserListCellFactory;
 
 import javax.swing.*;
 import java.util.List;
@@ -48,6 +50,7 @@ public class MessagesController {
         });
 
         usersList.setCellFactory(new UserListCellFactory());
+        messagesList.setCellFactory(new MessageCellFactory());
 
         loadUsers();
 

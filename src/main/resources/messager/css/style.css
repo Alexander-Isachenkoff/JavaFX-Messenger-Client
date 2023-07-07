@@ -57,3 +57,15 @@
 .users-list .increment-button, .users-list .decrement-button, .users-list .corner {
     -fx-background-color: none;
 }
+
+
+.messages-list {
+    -fx-background-color: none;
+    -fx-border-color: lightgrey;
+    -fx-border-width:  0 0 1 0;
+}
+
+.messages-list .list-cell {
+    -fx-background-color: none;
+    -fx-padding: 10;
+}

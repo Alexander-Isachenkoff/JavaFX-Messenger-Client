@@ -9,19 +9,23 @@
         <SplitPane dividerPositions="0.30094043887147337" HBox.hgrow="ALWAYS">
             <items>
                 <ListView fx:id="usersList" styleClass="users-list" SplitPane.resizableWithParent="false"/>
-                <VBox alignment="BOTTOM_CENTER" spacing="10.0">
+                <VBox alignment="BOTTOM_CENTER">
                     <children>
-                        <ListView fx:id="messagesList" VBox.vgrow="ALWAYS"/>
+                        <ListView fx:id="messagesList" styleClass="messages-list" VBox.vgrow="ALWAYS"/>
+                        <VBox spacing="10.0">
+                            <children>
 
-                        <TextArea fx:id="textArea" maxWidth="Infinity" prefHeight="60.0" wrapText="true"/>
+                                <TextArea fx:id="textArea" maxWidth="Infinity" prefHeight="60.0" wrapText="true"/>
 
-                        <HBox alignment="TOP_RIGHT">
-                            <Button onAction="#onSend" prefWidth="80" text="Отправить"/>
-                        </HBox>
+                                <HBox alignment="TOP_RIGHT">
+                                    <Button onAction="#onSend" prefWidth="80" text="Отправить"/>
+                                </HBox>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                            </padding>
+                        </VBox>
                     </children>
-                    <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-                    </padding>
                 </VBox>
             </items>
         </SplitPane>
