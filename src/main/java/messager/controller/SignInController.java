@@ -2,13 +2,13 @@ package messager.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import messager.Main;
 import messager.client.Client;
 import messager.client.ClientXML;
@@ -67,16 +67,17 @@ public class SignInController {
 
     private void signIn(User user) {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/messages.fxml"));
-        Scene newScene;
+        Parent load;
         try {
-            newScene = new Scene(fxmlLoader.load());
+            load = fxmlLoader.load();
             MessagesController controller = fxmlLoader.getController();
             controller.setUser(user);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        NodeUtils.setScene(getStage(), newScene);
+        Tab parentTab = NodeUtils.getParentTab(nameField);
+        parentTab.setContent(load);
     }
 
     private void onEnterPressed(KeyEvent event) {
@@ -88,17 +89,14 @@ public class SignInController {
     @FXML
     private void onSignUp() {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/sign_up.fxml"));
-        Scene newScene;
+        Parent load;
         try {
-            newScene = new Scene(fxmlLoader.load());
+            load = fxmlLoader.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        NodeUtils.setScene(getStage(), newScene);
+        Tab parentTab = NodeUtils.getParentTab(nameField);
+        parentTab.setContent(load);
     }
 
-    private Stage getStage() {
-        return (Stage) nameField.getScene().getWindow();
-    }
 }

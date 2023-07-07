@@ -1,8 +1,8 @@
 package messager.controller;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
@@ -10,12 +10,20 @@ import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.TextMessage;
 import messager.entities.User;
+import messager.requests.MessagesRequest;
+import messager.requests.MessagesResponse;
 import messager.requests.UsersListRequest;
 import messager.requests.UsersListResponse;
 import messager.server.Server;
 
+import javax.swing.*;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MessagesController {
 
+    @FXML
+    private ListView<TextMessage> messagesList;
     @FXML
     private ListView<User> usersList;
 
@@ -42,6 +50,22 @@ public class MessagesController {
         usersList.setCellFactory(new UserListCellFactory());
 
         loadUsers();
+
+        Timer timer = new Timer(500, actionEvent -> {
+            client.post(new MessagesRequest(user));
+            MessagesResponse messagesResponse = new Server().accept(MessagesResponse.class);
+            List<TextMessage> messages = messagesResponse.getMessages();
+            User userFrom = usersList.getSelectionModel().getSelectedItem();
+            if (userFrom != null) {
+                List<TextMessage> messagesFromSelectedUser = messages.stream()
+                        .filter(message -> message.getUserFrom().getName().equals(userFrom.getName()))
+                        .collect(Collectors.toList());
+                Platform.runLater(() -> messagesList.setItems(FXCollections.observableArrayList(messagesFromSelectedUser)));
+            }
+        });
+        timer.setInitialDelay(0);
+        timer.setRepeats(true);
+        timer.start();
     }
 
     private void loadUsers() {
@@ -59,7 +83,8 @@ public class MessagesController {
         if (text.trim().isEmpty()) {
             return;
         }
-        TextMessage message = new TextMessage(user, text);
+        User userTo = usersList.getSelectionModel().getSelectedItem();
+        TextMessage message = new TextMessage(user, userTo, text);
         client.post(message);
         textArea.clear();
         textArea.requestFocus();

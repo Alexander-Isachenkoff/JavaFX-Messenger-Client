@@ -9,20 +9,27 @@ import java.io.Serializable;
 public class TextMessage implements Serializable {
 
     @XmlElement
-    private User user;
+    private User userFrom;
+    @XmlElement
+    private User userTo;
     @XmlAttribute
     private String message;
 
     public TextMessage() {
     }
 
-    public TextMessage(User user, String message) {
-        this.user = user;
+    public TextMessage(User userFrom, User userTo, String message) {
+        this.userFrom = userFrom;
+        this.userTo = userTo;
         this.message = message;
     }
 
-    public User getUser() {
-        return user;
+    public User getUserFrom() {
+        return userFrom;
+    }
+
+    public User getUserTo() {
+        return userTo;
     }
 
     public String getMessage() {
@@ -31,11 +38,7 @@ public class TextMessage implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("TextMessage\n" +
-                "{\n" +
-                "    name = '%s',\n" +
-                "    message = '%s'\n" +
-                "}", user, message);
+        return String.format("%s: %s", getUserFrom().getName(), message);
     }
 
 }

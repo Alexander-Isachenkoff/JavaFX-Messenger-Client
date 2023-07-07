@@ -2,11 +2,11 @@ package messager.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import messager.Main;
 import messager.client.Client;
 import messager.client.ClientXML;
@@ -65,18 +65,14 @@ public class SignUpController {
     @FXML
     private void onSignIn() {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/sign_in.fxml"));
-        Scene newScene;
+        Parent load;
         try {
-            newScene = new Scene(fxmlLoader.load());
+            load = fxmlLoader.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        NodeUtils.setScene(getStage(), newScene);
-    }
-
-    private Stage getStage() {
-        return (Stage) nameField.getScene().getWindow();
+        Tab parentTab = NodeUtils.getParentTab(nameField);
+        parentTab.setContent(load);
     }
 
 }

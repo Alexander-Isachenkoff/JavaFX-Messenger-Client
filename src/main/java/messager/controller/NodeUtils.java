@@ -1,15 +1,20 @@
 package messager.controller;
 
-import javafx.scene.Scene;
-import javafx.scene.layout.Region;
-import javafx.stage.Stage;
+import javafx.scene.Node;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 
 public class NodeUtils {
-    public static void setScene(Stage stage, Scene newScene) {
-        Scene oldScene = stage.getScene();
-        double width = oldScene.getWidth();
-        double height = oldScene.getHeight();
-        ((Region) newScene.getRoot()).setPrefSize(width, height);
-        stage.setScene(newScene);
+
+    public static Tab getParentTab(Node node) {
+        Node parent = node;
+        do {
+            parent = parent.getParent();
+            if (parent == null) {
+                return null;
+            }
+        } while (!(parent instanceof TabPane));
+        return ((TabPane) parent).getSelectionModel().getSelectedItem();
     }
+
 }
