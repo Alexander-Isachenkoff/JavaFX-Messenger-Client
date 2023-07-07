@@ -30,6 +30,14 @@
     -fx-background-color: white;
 }
 
+.message-text-area, .message-text-area .content, .message-text-area .viewport {
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-background-color: none;
+    -fx-border-color: none;
+    -fx-highlight-fill: rgb(81, 129, 184);
+    -fx-padding: 0;
+}
 
 .users-list {
     -fx-background-color: #f2f2f2;
@@ -65,8 +73,6 @@
 
 .messages-list {
     -fx-background-color: none;
-    //-fx-border-color: lightgrey;
-    //-fx-border-width:  0 0 1 0;
 }
 
 .messages-list .list-cell {
