@@ -21,5 +21,7 @@ public class TextMessage implements Serializable {
     private User userTo;
     @XmlAttribute
     private String message;
+    @XmlAttribute
+    private String dateTime;
 
 }

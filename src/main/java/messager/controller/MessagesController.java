@@ -19,6 +19,7 @@ import messager.view.MessageCellFactory;
 import messager.view.UserListCellFactory;
 
 import javax.swing.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,7 +88,7 @@ public class MessagesController {
             return;
         }
         User userTo = usersList.getSelectionModel().getSelectedItem();
-        TextMessage message = new TextMessage(user, userTo, text);
+        TextMessage message = new TextMessage(user, userTo, text, LocalDateTime.now().toString());
         client.post(message);
         textArea.clear();
         textArea.requestFocus();
