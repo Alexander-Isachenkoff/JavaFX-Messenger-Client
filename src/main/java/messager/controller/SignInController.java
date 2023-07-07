@@ -76,8 +76,9 @@ public class SignInController {
             throw new RuntimeException(e);
         }
 
-        Tab parentTab = NodeUtils.getParentTab(nameField);
-        parentTab.setContent(load);
+        Tab currentTab = NodeUtils.getParentTab(nameField);
+        currentTab.setText(user.getName());
+        currentTab.setContent(load);
     }
 
     private void onEnterPressed(KeyEvent event) {
@@ -95,8 +96,9 @@ public class SignInController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Tab parentTab = NodeUtils.getParentTab(nameField);
-        parentTab.setContent(load);
+        Tab currentTab = NodeUtils.getParentTab(nameField);
+        currentTab.setText("Регистрация");
+        currentTab.setContent(load);
     }
 
 }
