@@ -26,6 +26,10 @@
     -fx-highlight-fill: rgb(81, 129, 184);
 }
 
+.text-area .content {
+    -fx-background-color: white;
+}
+
 
 .users-list {
     -fx-background-color: #f2f2f2;
@@ -61,11 +65,20 @@
 
 .messages-list {
     -fx-background-color: none;
-    -fx-border-color: lightgrey;
-    -fx-border-width:  0 0 1 0;
+    //-fx-border-color: lightgrey;
+    //-fx-border-width:  0 0 1 0;
 }
 
 .messages-list .list-cell {
     -fx-background-color: none;
     -fx-padding: 10;
+}
+
+.dialogs-split-pane .split-pane-divider {
+    -fx-background-color: lightgrey;
+    -fx-pref-width: 4;
+}
+
+.chat-split-pane .split-pane-divider {
+    -fx-pref-width: 1;
 }
