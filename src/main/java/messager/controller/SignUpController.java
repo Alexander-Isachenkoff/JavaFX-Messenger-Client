@@ -71,8 +71,9 @@ public class SignUpController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Tab parentTab = NodeUtils.getParentTab(nameField);
-        parentTab.setContent(load);
+        Tab currentTab = NodeUtils.getParentTab(nameField);
+        currentTab.setText("Вход");
+        currentTab.setContent(load);
     }
 
 }
