@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class User {
 
     @XmlAttribute
+    private Long id;
+    @XmlAttribute
     private String name;
     @XmlAttribute
     private String password;
