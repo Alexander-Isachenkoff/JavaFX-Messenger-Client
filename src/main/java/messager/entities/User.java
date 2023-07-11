@@ -1,6 +1,5 @@
 package messager.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +7,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @XmlRootElement
 public class User {
@@ -20,4 +18,8 @@ public class User {
     @XmlAttribute
     private String password;
 
+    public User(String name, String password) {
+        this.name = name;
+        this.password = password;
+    }
 }
