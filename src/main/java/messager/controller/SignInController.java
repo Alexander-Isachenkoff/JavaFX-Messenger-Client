@@ -21,14 +21,13 @@ import java.io.IOException;
 
 public class SignInController {
 
+    private final Client client = new ClientXML();
     @FXML
     private TextField nameField;
     @FXML
     private TextField passwordField;
     @FXML
     private Label responseLabel;
-
-    private final Client client = new ClientXML();
 
     @FXML
     private void initialize() {
@@ -43,24 +42,25 @@ public class SignInController {
     }
 
     private void postLoginData() {
-        User user = new User(nameField.getText(), passwordField.getText());
-        client.post(new SignInRequest(user));
+        String userName = nameField.getText();
+        String password = passwordField.getText();
+        client.post(new SignInRequest(userName, password));
 
         Server server = new Server();
         SignInResponse response = server.accept(SignInResponse.class);
 
-        if (response != SignInResponse.OK) {
+        if (!response.getStatus().equals("OK")) {
             responseLabel.setTextFill(Color.RED);
         }
-        switch (response) {
-            case OK:
-                signIn(user);
+        switch (response.getStatus()) {
+            case "OK":
+                signIn(response.getUser());
                 break;
-            case WRONG_PASSWORD:
+            case "WRONG_PASSWORD":
                 responseLabel.setText("Неверный пароль");
                 break;
-            case USER_NOT_FOUND:
-                responseLabel.setText(String.format("Не зарегистрирован пользователь \"%s\"", user.getName()));
+            case "USER_NOT_FOUND":
+                responseLabel.setText(String.format("Не зарегистрирован пользователь \"%s\"", userName));
                 break;
         }
     }
@@ -70,8 +70,9 @@ public class SignInController {
         Parent load;
         try {
             load = fxmlLoader.load();
-            MessagesController controller = fxmlLoader.getController();
+            DialogsController controller = fxmlLoader.getController();
             controller.setUser(user);
+            controller.postInit();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
