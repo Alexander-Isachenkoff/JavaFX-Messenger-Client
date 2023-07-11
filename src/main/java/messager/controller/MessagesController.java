@@ -51,7 +51,7 @@ public class MessagesController {
         });
 
         usersList.setCellFactory(new UserListCellFactory());
-        messagesList.setCellFactory(new MessageCellFactory());
+        messagesList.setCellFactory(new MessageCellFactory(() -> user));
 
         loadUsers();
 

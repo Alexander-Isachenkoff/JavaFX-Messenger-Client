@@ -33,6 +33,7 @@ public abstract class FxmlListCellFactory<T, C> implements Callback<ListView<T>,
                 FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(fxml));
                 try {
                     Parent cell = fxmlLoader.load();
+                    initCell(item, cell);
                     C controller = fxmlLoader.getController();
                     initController(item, controller);
                     setGraphic(cell);
@@ -41,6 +42,9 @@ public abstract class FxmlListCellFactory<T, C> implements Callback<ListView<T>,
                 }
             }
         }
+    }
+
+    protected void initCell(T item, Parent cell) {
     }
 
 }

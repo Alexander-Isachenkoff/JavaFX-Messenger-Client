@@ -80,6 +80,26 @@
     -fx-padding: 10;
 }
 
+.message {
+    -fx-background-radius: 15;
+}
+
+.my_message {
+    -fx-alignment: TOP_RIGHT;
+}
+
+.not_my_message {
+    -fx-alignment: TOP_LEFT;
+}
+
+.my_message .message {
+    -fx-background-color: #CEF;
+}
+
+.not_my_message .message {
+    -fx-background-color: #EFC;
+}
+
 .dialogs-split-pane .split-pane-divider {
     -fx-background-color: lightgrey;
     -fx-pref-width: 4;
