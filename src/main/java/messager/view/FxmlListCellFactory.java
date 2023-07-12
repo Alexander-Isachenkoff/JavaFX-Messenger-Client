@@ -24,6 +24,9 @@ public abstract class FxmlListCellFactory<T, C> implements Callback<ListView<T>,
 
     public abstract void initController(T item, C controller);
 
+    protected void initCell(T item, Parent cell) {
+    }
+
     private class FxmlCell extends ListCell<T> {
 
         @Override
@@ -40,11 +43,10 @@ public abstract class FxmlListCellFactory<T, C> implements Callback<ListView<T>,
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+            } else {
+                setGraphic(null);
             }
         }
-    }
-
-    protected void initCell(T item, Parent cell) {
     }
 
 }

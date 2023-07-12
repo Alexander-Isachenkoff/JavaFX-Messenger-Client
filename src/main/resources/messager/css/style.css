@@ -53,6 +53,15 @@
     -fx-cursor: HAND;
 }
 
+.users-list .list-cell:empty, .dialogs-list .list-cell:empty {
+    visibility: hidden;
+    -fx-cursor: DEFAULT;
+}
+
+.users-list .list-cell:empty {
+    -fx-background-color: white;
+}
+
 .dialogs-list .list-cell:hover, .users-list .list-cell:hover {
     -fx-background-color: #dadada;
 }

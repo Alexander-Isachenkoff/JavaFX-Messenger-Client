@@ -32,7 +32,6 @@ public class AddDialogController {
     private void initialize() {
         usersListView.setCellFactory(new UserListCellFactory());
 
-        // TODO: 12.07.2023 Исправить некорректное отображение элементов
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             List<User> filteredUsers = users.stream()
                     .filter(user -> user.getName().toLowerCase().contains(newValue.trim().toLowerCase()))
