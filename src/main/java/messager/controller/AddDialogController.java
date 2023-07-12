@@ -2,8 +2,10 @@ package messager.controller;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import messager.client.Client;
 import messager.client.ClientXML;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 public class AddDialogController {
 
     private final Client client = new ClientXML();
+    public Label corner;
+    public HBox header;
     @FXML
     private TextField searchField;
     @FXML
@@ -27,6 +31,10 @@ public class AddDialogController {
     private List<User> users;
     private Consumer<User> onUserSelected = user -> {
     };
+    private double resizePressedX;
+    private double resizePressedY;
+    private double movePressedX;
+    private double movePressedY;
 
     @FXML
     private void initialize() {
@@ -47,6 +55,26 @@ public class AddDialogController {
         UsersListResponse response = new Server().accept(UsersListResponse.class);
         users = response.getUsers();
         usersListView.setItems(FXCollections.observableList(users));
+
+        corner.setOnMousePressed(event -> {
+            resizePressedX = event.getX();
+            resizePressedY = event.getY();
+        });
+
+        corner.setOnMouseDragged(event -> {
+            getStage().setWidth(event.getScreenX() - getStage().getX() + corner.getWidth() - resizePressedX);
+            getStage().setHeight(event.getScreenY() - getStage().getY() + corner.getHeight() - resizePressedY);
+        });
+
+        header.setOnMousePressed(event -> {
+            movePressedX = event.getX();
+            movePressedY = event.getY();
+        });
+
+        header.setOnMouseDragged(event -> {
+            getStage().setX(event.getScreenX() - movePressedX);
+            getStage().setY(event.getScreenY() - movePressedY);
+        });
     }
 
     public void setOnUserSelected(Consumer<User> onUserSelected) {
