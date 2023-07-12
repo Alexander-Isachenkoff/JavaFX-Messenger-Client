@@ -49,17 +49,17 @@ public class SignInController {
         Server server = new Server();
         SignInResponse response = server.accept(SignInResponse.class);
 
-        if (!response.getStatus().equals("OK")) {
+        if (response.getStatus() != SignInResponse.SignInStatus.OK) {
             responseLabel.setTextFill(Color.RED);
         }
         switch (response.getStatus()) {
-            case "OK":
+            case OK:
                 signIn(response.getUser());
                 break;
-            case "WRONG_PASSWORD":
+            case WRONG_PASSWORD:
                 responseLabel.setText("Неверный пароль");
                 break;
-            case "USER_NOT_FOUND":
+            case USER_NOT_FOUND:
                 responseLabel.setText(String.format("Не зарегистрирован пользователь \"%s\"", userName));
                 break;
         }

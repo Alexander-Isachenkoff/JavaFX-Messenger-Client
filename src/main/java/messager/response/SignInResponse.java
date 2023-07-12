@@ -13,10 +13,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @AllArgsConstructor
 @XmlRootElement
 public class SignInResponse {
+
     @XmlElement
     private User user;
     @XmlElement
-    private String status;
+    private SignInStatus status;
 
+    public enum SignInStatus {
+        OK, WRONG_PASSWORD, USER_NOT_FOUND
+    }
 }
 
