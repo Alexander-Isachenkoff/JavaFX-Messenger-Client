@@ -23,10 +23,12 @@ public class Dialog {
     @XmlAttribute
     private String name;
 
+    @EqualsAndHashCode.Exclude
     @XmlElementWrapper(name = "users")
     @XmlElement(name = "user")
     private List<User> users = new ArrayList<>();
 
+    @EqualsAndHashCode.Exclude
     @XmlElementWrapper(name = "messages")
     @XmlElement(name = "message")
     private final List<TextMessage> messages = new ArrayList<>();

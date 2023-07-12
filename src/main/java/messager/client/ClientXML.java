@@ -23,11 +23,11 @@ public class ClientXML extends Client {
         try (ObjectOutputStream os = new ObjectOutputStream(getSocket().getOutputStream())) {
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marshaller.marshal(object, os);
             if (SHOW_XML) {
                 marshaller.marshal(object, System.out);
                 System.out.println();
             }
+            marshaller.marshal(object, os);
         } catch (JAXBException | IOException e) {
             throw new RuntimeException(e);
         }

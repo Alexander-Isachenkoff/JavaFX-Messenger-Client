@@ -2,10 +2,18 @@ package messager.controller;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import messager.Main;
 import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.Dialog;
@@ -19,6 +27,7 @@ import messager.server.Server;
 import messager.view.DialogListCellFactory;
 import messager.view.MessageCellFactory;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,19 +62,31 @@ public class DialogsController {
         dialogsList.setCellFactory(new DialogListCellFactory(() -> user)); // TODO: 11.07.2023 Переделать доступ к текущему юзеру
         messagesList.setCellFactory(new MessageCellFactory(() -> user));
 
-        dialogsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            loadMessages(newValue);
+        dialogsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, dialog) -> {
+            if (dialog != null) {
+                List<TextMessage> messages = loadAllMessages(dialog);
+                messagesList.setItems(FXCollections.observableArrayList(messages));
+            } else {
+                messagesList.getItems().clear();
+            }
         });
     }
 
-    private void loadMessages(Dialog dialog) {
-        client.post(new MessagesRequest(dialog));
-        MessagesResponse messagesResponse = new Server().accept(MessagesResponse.class);
-        List<TextMessage> messages = messagesResponse.getMessages();
-        List<TextMessage> newMessages = messages.stream()
+    private List<TextMessage> loadNewMessages(Dialog dialog) {
+        List<TextMessage> messages = loadAllMessages(dialog);
+        return messages.stream()
                 .filter(message -> messagesList.getItems().stream().noneMatch(message1 -> message1.getId() == message.getId()))
                 .collect(Collectors.toList());
-        messagesList.getItems().addAll(newMessages);
+    }
+
+    private List<TextMessage> loadAllMessages(Dialog dialog) {
+        client.post(new MessagesRequest(dialog));
+        MessagesResponse messagesResponse = new Server().accept(MessagesResponse.class);
+        return messagesResponse.getMessages();
+    }
+
+    void selectDialog(Dialog dialog) {
+        dialogsList.getSelectionModel().select(dialog);
     }
 
     @FXML
@@ -73,7 +94,7 @@ public class DialogsController {
         loadDialogs();
     }
 
-    private void loadDialogs() {
+    public void loadDialogs() {
         client.post(new DialogsListRequest(user));
         DialogsListResponse response = new Server().accept(DialogsListResponse.class);
         dialogsList.setItems(FXCollections.observableArrayList(response.getDialogs()));
@@ -110,7 +131,31 @@ public class DialogsController {
     private void onMessagesRefresh() {
         Dialog dialog = dialogsList.getSelectionModel().getSelectedItem();
         if (dialog != null) {
-            loadMessages(dialog);
+            messagesList.getItems().addAll(loadNewMessages(dialog));
         }
+    }
+
+    @FXML
+    private void onAddDialog() {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/add_dialog.fxml"));
+        Parent load;
+        try {
+            load = fxmlLoader.load();
+            AddDialogController controller = fxmlLoader.getController();
+            controller.setDialogsController(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Stage stage = new Stage(StageStyle.TRANSPARENT);
+        Scene scene = new Scene(load);
+        scene.setFill(Color.TRANSPARENT);
+        stage.setScene(scene);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(dialogsList.getScene().getWindow());
+        stage.show();
+    }
+
+    public User getUser() {
+        return user;
     }
 }
