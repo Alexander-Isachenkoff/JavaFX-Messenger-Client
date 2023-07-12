@@ -111,6 +111,13 @@
 
 .tool-button {
     -fx-background-color: none;
+    -fx-padding: 0;
+    -fx-font-size: 1;
+}
+
+.line {
+    -fx-stroke: grey;
+    -fx-stroke-width: 2;
 }
 
 .tool-button:hover {
