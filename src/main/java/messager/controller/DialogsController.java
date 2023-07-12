@@ -20,8 +20,10 @@ import messager.client.ClientXML;
 import messager.entities.Dialog;
 import messager.entities.TextMessage;
 import messager.entities.User;
+import messager.requests.AddDialogRequest;
 import messager.requests.DialogsListRequest;
 import messager.requests.MessagesRequest;
+import messager.response.AddDialogResponse;
 import messager.response.DialogsListResponse;
 import messager.response.MessagesResponse;
 import messager.server.Server;
@@ -119,11 +121,6 @@ public class DialogsController {
         onMessagesRefresh();
     }
 
-    public void setUser(User user) {
-        this.user = user;
-        userNameLabel.setText(user.getName());
-    }
-
     public void postInit() {
         loadDialogs();
     }
@@ -143,7 +140,13 @@ public class DialogsController {
         try {
             load = fxmlLoader.load();
             AddDialogController controller = fxmlLoader.getController();
-            controller.setDialogsController(this);
+            controller.setOnUserSelected(selectedUser -> {
+                client.post(new AddDialogRequest(user, selectedUser));
+                AddDialogResponse addDialogResponse = new Server().accept(AddDialogResponse.class);
+                loadDialogs();
+                selectDialog(addDialogResponse.getDialog());
+                controller.closeWindow();
+            });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -161,5 +164,10 @@ public class DialogsController {
 
     public User getUser() {
         return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+        userNameLabel.setText(user.getName());
     }
 }

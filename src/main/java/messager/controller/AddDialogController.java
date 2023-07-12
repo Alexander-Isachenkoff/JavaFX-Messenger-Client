@@ -8,14 +8,13 @@ import javafx.stage.Stage;
 import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.User;
-import messager.requests.AddDialogRequest;
 import messager.requests.UsersListRequest;
-import messager.response.AddDialogResponse;
 import messager.response.UsersListResponse;
 import messager.server.Server;
 import messager.view.UserListCellFactory;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class AddDialogController {
@@ -25,8 +24,9 @@ public class AddDialogController {
     private TextField searchField;
     @FXML
     private ListView<User> usersListView;
-    private DialogsController controller;
     private List<User> users;
+    private Consumer<User> onUserSelected = user -> {
+    };
 
     @FXML
     private void initialize() {
@@ -40,12 +40,8 @@ public class AddDialogController {
             usersListView.setItems(FXCollections.observableList(filteredUsers));
         });
 
-        usersListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, userTo) -> {
-            client.post(new AddDialogRequest(controller.getUser(), userTo));
-            AddDialogResponse addDialogResponse = new Server().accept(AddDialogResponse.class);
-            controller.loadDialogs();
-            controller.selectDialog(addDialogResponse.getDialog());
-            onClose();
+        usersListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, selectedUser) -> {
+            onUserSelected.accept(selectedUser);
         });
 
         client.post(new UsersListRequest());
@@ -54,17 +50,21 @@ public class AddDialogController {
         usersListView.setItems(FXCollections.observableList(users));
     }
 
+    public void setOnUserSelected(Consumer<User> onUserSelected) {
+        this.onUserSelected = onUserSelected;
+    }
+
     @FXML
     private void onClose() {
+        closeWindow();
+    }
+
+    public void closeWindow() {
         getStage().close();
     }
 
     private Stage getStage() {
         return (Stage) usersListView.getScene().getWindow();
-    }
-
-    public void setDialogsController(DialogsController controller) {
-        this.controller = controller;
     }
 
 }
