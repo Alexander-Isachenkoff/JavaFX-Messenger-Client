@@ -66,7 +66,7 @@ public class SignInController {
     }
 
     private void signIn(User user) {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/messages.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/dialogs.fxml"));
         Parent load;
         try {
             load = fxmlLoader.load();
