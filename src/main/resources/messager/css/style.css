@@ -108,3 +108,15 @@
 .chat-split-pane .split-pane-divider {
     -fx-pref-width: 1;
 }
+
+.tool-button {
+    -fx-background-color: none;
+}
+
+.tool-button:hover {
+    -fx-background-color: #ccc;
+}
+
+.tool-button:pressed {
+    -fx-background-color: #bbb;
+}

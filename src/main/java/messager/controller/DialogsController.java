@@ -2,6 +2,7 @@ package messager.controller;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
@@ -25,6 +26,8 @@ import java.util.stream.Collectors;
 public class DialogsController {
 
     private final Client client = new ClientXML();
+    @FXML
+    private Label userNameLabel;
     @FXML
     private ListView<TextMessage> messagesList;
     @FXML
@@ -96,6 +99,7 @@ public class DialogsController {
 
     public void setUser(User user) {
         this.user = user;
+        userNameLabel.setText(user.getName());
     }
 
     public void postInit() {
