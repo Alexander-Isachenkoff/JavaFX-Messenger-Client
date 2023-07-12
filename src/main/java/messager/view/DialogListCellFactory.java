@@ -11,7 +11,7 @@ public class DialogListCellFactory extends FxmlListCellFactory<Dialog, DialogCel
     private final Supplier<User> userSupplier;
 
     public DialogListCellFactory(Supplier<User> userSupplier) {
-        super("fxml/user_cell.fxml");
+        super("fxml/dialog_cell.fxml");
         this.userSupplier = userSupplier;
     }
 

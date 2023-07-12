@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import messager.Main;
 import messager.client.Client;
 import messager.client.ClientXML;
@@ -151,8 +152,11 @@ public class DialogsController {
         scene.setFill(Color.TRANSPARENT);
         stage.setScene(scene);
         stage.initModality(Modality.WINDOW_MODAL);
-        stage.initOwner(dialogsList.getScene().getWindow());
+        Window owner = dialogsList.getScene().getWindow();
+        stage.initOwner(owner);
         stage.show();
+        stage.setX(owner.getX() + owner.getWidth() / 2 - stage.getWidth() / 2);
+        stage.setY(owner.getY() + owner.getHeight() / 2 - stage.getHeight() / 2);
     }
 
     public User getUser() {

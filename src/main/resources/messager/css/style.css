@@ -39,34 +39,38 @@
     -fx-padding: 0;
 }
 
-.users-list {
+.dialogs-list {
     -fx-background-color: #f2f2f2;
     -fx-border: none;
 }
 
-.users-list .list-cell {
-    -fx-padding: 0;
+.dialogs-list .list-cell {
     -fx-background-color: #f2f2f2;
 }
 
-.users-list .list-cell:hover {
+.users-list .list-cell, .dialogs-list .list-cell {
+    -fx-padding: 0;
+    -fx-cursor: HAND;
+}
+
+.dialogs-list .list-cell:hover, .users-list .list-cell:hover {
     -fx-background-color: #dadada;
 }
 
-.users-list .list-cell:pressed {
+.dialogs-list .list-cell:pressed {
     -fx-background-color: #c2c2c2;
 }
 
-.users-list .list-cell:selected {
+.dialogs-list .list-cell:selected {
     -fx-text-fill: black;
     -fx-background-color: rgb(81, 129, 184);
 }
 
-.users-list .scroll-bar {
+.dialogs-list .scroll-bar {
     -fx-background-color: none;
 }
 
-.users-list .increment-button, .users-list .decrement-button, .users-list .corner {
+.dialogs-list .increment-button, .dialogs-list .decrement-button, .dialogs-list .corner {
     -fx-background-color: none;
 }
 
