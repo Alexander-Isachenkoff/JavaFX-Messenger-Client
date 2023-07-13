@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class TextMessage implements Serializable {
 
     @XmlAttribute
-    private Long id;
+    private long id;
     @XmlElement
     private User userFrom;
     @XmlAttribute
