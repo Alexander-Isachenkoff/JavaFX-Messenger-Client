@@ -66,13 +66,12 @@
     -fx-background-color: #dadada;
 }
 
-.dialogs-list .list-cell:pressed {
-    -fx-background-color: #c2c2c2;
+.dialogs-list .list-cell:selected {
+    -fx-background-color: rgb(81, 129, 184);
 }
 
-.dialogs-list .list-cell:selected {
-    -fx-text-fill: black;
-    -fx-background-color: rgb(81, 129, 184);
+.dialogs-list .list-cell:selected .label {
+    -fx-text-fill: white;
 }
 
 .dialogs-list .scroll-bar {
