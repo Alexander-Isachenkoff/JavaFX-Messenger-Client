@@ -1,7 +1,9 @@
 package messager.controller;
 
+import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import messager.entities.Dialog;
 import messager.entities.User;
 import messager.util.ImageUtils;
@@ -10,10 +12,14 @@ import java.util.Optional;
 
 public class DialogCellController {
 
-    public Label dialogTitle;
-    public Label messageTextLabel;
-    public Label timeLabel;
-    public ImageView imageView;
+    @FXML
+    private Label dialogTitle;
+    @FXML
+    private Label messageTextLabel;
+    @FXML
+    private Label timeLabel;
+    @FXML
+    private Circle imageCircle;
 
     public void setDialog(Dialog dialog, User currentUser) {
         if (dialog.getName() != null) {
@@ -28,7 +34,7 @@ public class DialogCellController {
                 dialogTitle.setText(user.getName());
                 String encodedImage = user.getEncodedImage();
                 if (encodedImage != null) {
-                    imageView.setImage(ImageUtils.decodeImage(encodedImage));
+                    imageCircle.setFill(new ImagePattern(ImageUtils.decodeImage(encodedImage)));
                 }
             }
         }

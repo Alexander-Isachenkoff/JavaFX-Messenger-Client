@@ -10,6 +10,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -27,6 +29,7 @@ import messager.response.AddDialogResponse;
 import messager.response.DialogsListResponse;
 import messager.response.MessagesResponse;
 import messager.server.Server;
+import messager.util.ImageUtils;
 import messager.view.DialogListCellFactory;
 import messager.view.MessageCellFactory;
 
@@ -38,6 +41,8 @@ import java.util.stream.Collectors;
 public class DialogsController {
 
     private final Client client = new ClientXML();
+    @FXML
+    private Circle userImageCircle;
     @FXML
     private Label userNameLabel;
     @FXML
@@ -169,5 +174,8 @@ public class DialogsController {
     public void setUser(User user) {
         this.user = user;
         userNameLabel.setText(user.getName());
+        if (user.getEncodedImage() != null) {
+            userImageCircle.setFill(new ImagePattern(ImageUtils.decodeImage(user.getEncodedImage())));
+        }
     }
 }

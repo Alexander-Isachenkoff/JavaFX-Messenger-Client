@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 <VBox fillWidth="false" styleClass="my_message" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.171"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="messager.controller.MessageCellController">
@@ -13,9 +13,7 @@
             <children>
                 <HBox spacing="8.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                              prefHeight="32.0" prefWidth="32.0"
-                              style="-fx-background-color: black; -fx-background-radius: 50%;"/>
+                        <Circle fx:id="imageCircle" radius="16.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0"/>
                         <VBox>
                             <children>
                                 <Label fx:id="userNameLabel" text="Имя Пользователя">
