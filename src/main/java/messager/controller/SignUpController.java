@@ -6,7 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import messager.Main;
 import messager.client.Client;
 import messager.client.ClientXML;
@@ -14,11 +18,21 @@ import messager.entities.User;
 import messager.requests.SignUpRequest;
 import messager.response.SignUpResponse;
 import messager.server.Server;
+import messager.util.FileUtils;
+import messager.util.ImageUtils;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class SignUpController {
 
+    private final Client client = new ClientXML();
+    @FXML
+    private ImageView imageView;
     @FXML
     private TextField nameField;
     @FXML
@@ -26,7 +40,7 @@ public class SignUpController {
     @FXML
     private Label responseLabel;
 
-    private final Client client = new ClientXML();
+    private File imageFile;
 
     @FXML
     private void initialize() {
@@ -39,7 +53,9 @@ public class SignUpController {
     }
 
     private void postSignUpData() {
-        User user = new User(nameField.getText(), passwordField.getText());
+        String encodedImage = getEncodedImage();
+
+        User user = new User(nameField.getText(), passwordField.getText(), encodedImage);
         client.post(new SignUpRequest(user));
 
         Server server = new Server();
@@ -62,6 +78,21 @@ public class SignUpController {
         }
     }
 
+    private String getEncodedImage() {
+        String encodedImage;
+        if (imageFile != null) {
+            try {
+                BufferedImage image = ImageIO.read(imageFile);
+                encodedImage = ImageUtils.encodeImage(image, FileUtils.getExtension(imageFile));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            encodedImage = null;
+        }
+        return encodedImage;
+    }
+
     @FXML
     private void onSignIn() {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/sign_in.fxml"));
@@ -74,6 +105,28 @@ public class SignUpController {
         Tab currentTab = NodeUtils.getParentTab(nameField);
         currentTab.setText("Вход");
         currentTab.setContent(load);
+    }
+
+    @FXML
+    private void onAddImage() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Файлы изображений", "*.jpg", "*.jpeg", "*.png", ".bmp"));
+        File file = fileChooser.showOpenDialog(getStage());
+        if (file == null) {
+            return;
+        }
+        this.imageFile = file;
+        Image image;
+        try {
+            image = new Image(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        imageView.setImage(image);
+    }
+
+    private Stage getStage() {
+        return (Stage) nameField.getScene().getWindow();
     }
 
 }
