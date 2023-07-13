@@ -8,8 +8,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
@@ -21,24 +19,17 @@ import messager.Main;
 import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.Dialog;
-import messager.entities.TextMessage;
 import messager.entities.User;
 import messager.requests.AddDialogRequest;
 import messager.requests.DialogsListRequest;
-import messager.requests.MessagesRequest;
 import messager.response.AddDialogResponse;
 import messager.response.DialogsListResponse;
-import messager.response.MessagesResponse;
 import messager.server.Server;
 import messager.util.ImageUtils;
 import messager.view.DialogListCellFactory;
-import messager.view.MessageCellFactory;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class DialogsController {
 
@@ -48,55 +39,23 @@ public class DialogsController {
     @FXML
     private Label userNameLabel;
     @FXML
-    private ListView<TextMessage> messagesList;
-    @FXML
     private ListView<Dialog> dialogsList;
-    private User user;
     @FXML
-    private TextArea textArea;
+    private DialogController dialogController;
+
+    private User user;
 
     @FXML
     private void initialize() {
-        textArea.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                if (event.isShiftDown()) {
-                    textArea.insertText(textArea.getCaretPosition(), "\n");
-                } else {
-                    sendMessage();
-                    event.consume();
-                    textArea.clear();
-                }
-            }
-        });
-
         dialogsList.setCellFactory(new DialogListCellFactory(() -> user)); // TODO: 11.07.2023 Переделать доступ к текущему юзеру
-        messagesList.setCellFactory(new MessageCellFactory(() -> user));
 
         dialogsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, dialog) -> {
-            if (dialog != null) {
-                List<TextMessage> messages = loadAllMessages(dialog);
-                messagesList.setItems(FXCollections.observableArrayList(messages));
-            } else {
-                messagesList.getItems().clear();
-            }
+            dialogController.setDialog(dialog);
         });
 
-        Timer timer = new Timer(1000, actionEvent -> Platform.runLater(this::onMessagesRefresh));
+        Timer timer = new Timer(1000, actionEvent -> Platform.runLater(() -> dialogController.onMessagesRefresh()));
         timer.setRepeats(true);
         timer.start();
-    }
-
-    private List<TextMessage> loadNewMessages(Dialog dialog) {
-        List<TextMessage> messages = loadAllMessages(dialog);
-        return messages.stream()
-                .filter(message -> messagesList.getItems().stream().noneMatch(message1 -> message1.getId() == message.getId()))
-                .collect(Collectors.toList());
-    }
-
-    private List<TextMessage> loadAllMessages(Dialog dialog) {
-        client.post(new MessagesRequest(dialog));
-        MessagesResponse messagesResponse = new Server().accept(MessagesResponse.class);
-        return messagesResponse.getMessages();
     }
 
     void selectDialog(Dialog dialog) {
@@ -114,38 +73,8 @@ public class DialogsController {
         dialogsList.setItems(FXCollections.observableArrayList(response.getDialogs()));
     }
 
-    @FXML
-    private void onSend() {
-        sendMessage();
-    }
-
-    private void sendMessage() {
-        String text = textArea.getText();
-        if (text.trim().isEmpty()) {
-            return;
-        }
-        Dialog dialog = getSelectedDialog();
-        TextMessage message = new TextMessage(user, text, LocalDateTime.now().toString(), dialog);
-        client.post(message);
-        textArea.clear();
-        textArea.requestFocus();
-        onMessagesRefresh();
-    }
-
-    private Dialog getSelectedDialog() {
-        return dialogsList.getSelectionModel().getSelectedItem();
-    }
-
     public void postInit() {
         loadDialogs();
-    }
-
-    @FXML
-    private void onMessagesRefresh() {
-        Dialog dialog = getSelectedDialog();
-        if (dialog != null) {
-            messagesList.getItems().addAll(loadNewMessages(dialog));
-        }
     }
 
     @FXML
@@ -187,5 +116,6 @@ public class DialogsController {
         if (user.getEncodedImage() != null) {
             userImageCircle.setFill(new ImagePattern(ImageUtils.decodeImage(user.getEncodedImage())));
         }
+        dialogController.setCurrentUser(user);
     }
 }
