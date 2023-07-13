@@ -1,11 +1,13 @@
 package messager.client;
 
+import messager.util.AppProperties;
+
 import java.io.IOException;
 import java.net.Socket;
 
 public abstract class Client implements Poster {
 
-    public static final String ADDRESS = "127.0.0.1";
+    public static final String ADDRESS = AppProperties.getServerAddress();
     public static final int PORT = 11111;
     private Socket socket;
 

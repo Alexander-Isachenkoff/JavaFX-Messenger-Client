@@ -31,6 +31,10 @@ public final class AppProperties {
         return instance().getBoolean("showXml");
     }
 
+    public static String getServerAddress() {
+        return instance().getString("serverAddress");
+    }
+
     String getString(String name) {
         return properties.getProperty(name);
     }
