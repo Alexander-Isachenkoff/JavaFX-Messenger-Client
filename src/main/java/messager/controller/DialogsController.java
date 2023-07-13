@@ -1,5 +1,6 @@
 package messager.controller;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,6 +34,7 @@ import messager.util.ImageUtils;
 import messager.view.DialogListCellFactory;
 import messager.view.MessageCellFactory;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -78,6 +80,10 @@ public class DialogsController {
                 messagesList.getItems().clear();
             }
         });
+
+        Timer timer = new Timer(1000, actionEvent -> Platform.runLater(this::onMessagesRefresh));
+        timer.setRepeats(true);
+        timer.start();
     }
 
     private List<TextMessage> loadNewMessages(Dialog dialog) {
@@ -118,12 +124,16 @@ public class DialogsController {
         if (text.trim().isEmpty()) {
             return;
         }
-        Dialog dialog = dialogsList.getSelectionModel().getSelectedItem();
+        Dialog dialog = getSelectedDialog();
         TextMessage message = new TextMessage(user, text, LocalDateTime.now().toString(), dialog);
         client.post(message);
         textArea.clear();
         textArea.requestFocus();
         onMessagesRefresh();
+    }
+
+    private Dialog getSelectedDialog() {
+        return dialogsList.getSelectionModel().getSelectedItem();
     }
 
     public void postInit() {
@@ -132,7 +142,7 @@ public class DialogsController {
 
     @FXML
     private void onMessagesRefresh() {
-        Dialog dialog = dialogsList.getSelectionModel().getSelectedItem();
+        Dialog dialog = getSelectedDialog();
         if (dialog != null) {
             messagesList.getItems().addAll(loadNewMessages(dialog));
         }
