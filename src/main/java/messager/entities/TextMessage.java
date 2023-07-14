@@ -7,13 +7,12 @@ import lombok.NoArgsConstructor;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @XmlRootElement
-public class TextMessage implements Serializable {
+public class TextMessage {
 
     @XmlAttribute
     private long id;
