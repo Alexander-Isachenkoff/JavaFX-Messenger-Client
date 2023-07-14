@@ -54,9 +54,8 @@ public class SignUpController {
     }
 
     private void postSignUpData() {
-        String encodedImage = getEncodedImage();
-
-        client.post(new SignUpRequest(nameField.getText(), passwordField.getText(), encodedImage));
+        SignUpRequest request = createSignUpRequest();
+        client.post(request);
 
         Server server = new Server();
         SignUpResponse response = server.accept(SignUpResponse.class);
@@ -78,19 +77,19 @@ public class SignUpController {
         }
     }
 
-    private String getEncodedImage() {
-        String encodedImage;
+    private SignUpRequest createSignUpRequest() {
+        String encodedImage = null;
+        String imageFormat = null;
         if (imageFile != null) {
             try {
                 BufferedImage image = ImageIO.read(imageFile);
-                encodedImage = ImageUtils.encodeImage(image, FileUtils.getExtension(imageFile));
+                imageFormat = FileUtils.getExtension(imageFile);
+                encodedImage = ImageUtils.encodeImage(image, imageFormat);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        } else {
-            encodedImage = null;
         }
-        return encodedImage;
+        return new SignUpRequest(nameField.getText(), passwordField.getText(), encodedImage, imageFormat);
     }
 
     @FXML

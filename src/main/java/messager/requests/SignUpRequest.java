@@ -18,4 +18,6 @@ public class SignUpRequest {
     private String password;
     @XmlElement
     private String encodedImage;
+    @XmlElement
+    private String imageFormat;
 }
