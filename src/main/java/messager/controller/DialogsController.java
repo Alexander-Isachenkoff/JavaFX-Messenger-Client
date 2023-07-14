@@ -25,7 +25,6 @@ import messager.requests.DialogsListRequest;
 import messager.response.AddDialogResponse;
 import messager.response.DialogsListResponse;
 import messager.server.Server;
-import messager.util.ImageUtils;
 import messager.view.DialogListCellFactory;
 
 import javax.swing.*;
@@ -114,9 +113,7 @@ public class DialogsController {
     public void setUser(User user) {
         this.user = user;
         userNameLabel.setText(user.getName());
-        if (user.getEncodedImage() != null) {
-            userImageCircle.setFill(new ImagePattern(ImageUtils.decodeImage(user.getEncodedImage())));
-        }
+        userImageCircle.setFill(new ImagePattern(user.getImageToView()));
         dialogController.setCurrentUser(user);
     }
 }

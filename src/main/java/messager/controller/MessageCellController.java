@@ -7,13 +7,13 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import messager.entities.TextMessage;
 import messager.entities.User;
-import messager.util.ImageUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
 public class MessageCellController {
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
     @FXML
     private Circle imageCircle;
     @FXML
@@ -24,8 +24,6 @@ public class MessageCellController {
     private TextArea messageTextArea;
     @FXML
     private Label timeLabel;
-
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
 
     @FXML
     private void initialize() {
@@ -40,8 +38,6 @@ public class MessageCellController {
         String format = time.format(TIME_FORMATTER);
         timeLabel.setText(format);
 
-        if (userFrom.getEncodedImage() != null) {
-            imageCircle.setFill(new ImagePattern(ImageUtils.decodeImage(userFrom.getEncodedImage())));
-        }
+        imageCircle.setFill(new ImagePattern(userFrom.getImageToView()));
     }
 }

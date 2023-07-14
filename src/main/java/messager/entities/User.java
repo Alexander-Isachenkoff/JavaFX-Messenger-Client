@@ -1,8 +1,11 @@
 package messager.entities;
 
+import javafx.scene.image.Image;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import messager.util.ImageUtils;
+import messager.util.Resources;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -20,5 +23,15 @@ public class User {
     private String name;
     @XmlElement
     private String encodedImage;
+
+    public Image getImageToView() {
+        Image image;
+        if (getEncodedImage() != null) {
+            image = ImageUtils.decodeImage(getEncodedImage());
+        } else {
+            image = Resources.getDefaultUserImage();
+        }
+        return image;
+    }
 
 }

@@ -6,7 +6,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import messager.client.Client;
@@ -17,7 +16,6 @@ import messager.entities.User;
 import messager.requests.MessagesRequest;
 import messager.response.MessagesResponse;
 import messager.server.Server;
-import messager.util.ImageUtils;
 import messager.view.MessageCellFactory;
 
 import java.time.LocalDateTime;
@@ -27,6 +25,7 @@ import java.util.stream.Collectors;
 
 public class DialogController {
 
+    private final Client client = new ClientXML();
     @FXML
     private Circle userImageCircle;
     @FXML
@@ -35,11 +34,8 @@ public class DialogController {
     private ListView<TextMessage> messagesList;
     @FXML
     private TextArea textArea;
-
     private Dialog dialog;
     private User currentUser;
-
-    private final Client client = new ClientXML();
 
     @FXML
     private void initialize() {
@@ -103,12 +99,7 @@ public class DialogController {
                     .findFirst();
             User userTo = optionalUser.get();
             userNameLabel.setText(userTo.getName());
-            String encodedImage = userTo.getEncodedImage();
-            if (encodedImage != null) {
-                userImageCircle.setFill(new ImagePattern(ImageUtils.decodeImage(encodedImage)));
-            } else {
-                userImageCircle.setFill(Color.BLACK);
-            }
+            userImageCircle.setFill(new ImagePattern(userTo.getImageToView()));
         } else {
             messagesList.getItems().clear();
         }

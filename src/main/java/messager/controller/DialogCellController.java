@@ -6,7 +6,6 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import messager.entities.Dialog;
 import messager.entities.User;
-import messager.util.ImageUtils;
 
 import java.util.Optional;
 
@@ -32,10 +31,7 @@ public class DialogCellController {
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
                 dialogTitle.setText(user.getName());
-                String encodedImage = user.getEncodedImage();
-                if (encodedImage != null) {
-                    imageCircle.setFill(new ImagePattern(ImageUtils.decodeImage(encodedImage)));
-                }
+                imageCircle.setFill(new ImagePattern(user.getImageToView()));
             }
         }
     }
