@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 import messager.Main;
 import messager.client.Client;
 import messager.client.ClientXML;
-import messager.entities.User;
 import messager.requests.SignUpRequest;
 import messager.response.SignUpResponse;
 import messager.server.Server;
@@ -27,6 +26,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import static messager.response.SignUpResponse.SignUpStatus.OK;
 
 public class SignUpController {
 
@@ -55,25 +56,24 @@ public class SignUpController {
     private void postSignUpData() {
         String encodedImage = getEncodedImage();
 
-        User user = new User(nameField.getText(), passwordField.getText(), encodedImage);
-        client.post(new SignUpRequest(user));
+        client.post(new SignUpRequest(nameField.getText(), passwordField.getText(), encodedImage));
 
         Server server = new Server();
         SignUpResponse response = server.accept(SignUpResponse.class);
 
-        if (response == SignUpResponse.OK) {
+        if (response.getStatus() == OK) {
             responseLabel.setTextFill(Color.GREEN);
         } else {
             responseLabel.setTextFill(Color.RED);
         }
-        switch (response) {
+        switch (response.getStatus()) {
             case OK:
-                responseLabel.setText(String.format("Пользователь \"%s\" успешно зарегистрирован", user.getName()));
+                responseLabel.setText(String.format("Пользователь \"%s\" успешно зарегистрирован", response.getUser().getName()));
                 nameField.clear();
                 passwordField.clear();
                 break;
             case USER_ALREADY_EXISTS:
-                responseLabel.setText(String.format("Пользователь с именем \"%s\" уже зарегистрирован", user.getName()));
+                responseLabel.setText(String.format("Пользователь с именем \"%s\" уже зарегистрирован", nameField.getText()));
                 break;
         }
     }

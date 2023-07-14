@@ -18,15 +18,7 @@ public class User {
     private long id;
     @XmlAttribute
     private String name;
-    @XmlAttribute
-    private String password;
     @XmlElement
     private String encodedImage;
-
-    public User(String name, String password, String encodedImage) {
-        this.name = name;
-        this.password = password;
-        this.encodedImage = encodedImage;
-    }
 
 }
