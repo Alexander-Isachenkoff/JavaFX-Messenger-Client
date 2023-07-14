@@ -2,7 +2,6 @@ package messager.entities;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -13,7 +12,6 @@ import java.util.List;
 
 @EqualsAndHashCode
 @Getter
-@NoArgsConstructor
 @XmlRootElement
 public class Dialog {
 
@@ -31,11 +29,9 @@ public class Dialog {
     @EqualsAndHashCode.Exclude
     @XmlElementWrapper(name = "messages")
     @XmlElement(name = "message")
-    private final List<TextMessage> messages = new ArrayList<>();
+    private List<TextMessage> messages = new ArrayList<>();
 
-    public Dialog(String name, List<User> users) {
-        this.name = name;
-        this.users = users;
+    private Dialog() {
     }
 
 }

@@ -115,7 +115,7 @@ public class DialogController {
     }
 
     private List<TextMessage> loadAllMessages(Dialog dialog) {
-        client.post(new MessagesRequest(dialog));
+        client.post(new MessagesRequest(dialog.getId()));
         MessagesResponse messagesResponse = new Server().accept(MessagesResponse.class);
         return messagesResponse.getMessages();
     }
