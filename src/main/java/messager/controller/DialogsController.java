@@ -68,7 +68,7 @@ public class DialogsController {
     }
 
     public void loadDialogs() {
-        client.post(new DialogsListRequest(user));
+        client.post(new DialogsListRequest(user.getId()));
         DialogsListResponse response = new Server().accept(DialogsListResponse.class);
         dialogsList.setItems(FXCollections.observableArrayList(response.getDialogs()));
     }
@@ -87,8 +87,9 @@ public class DialogsController {
             controller.setOnUserSelected(selectedUser -> {
                 client.post(new AddDialogRequest(user, selectedUser));
                 AddDialogResponse addDialogResponse = new Server().accept(AddDialogResponse.class);
-                loadDialogs();
-                selectDialog(addDialogResponse.getDialog());
+                Dialog newDialog = addDialogResponse.getDialog();
+                dialogsList.getItems().add(newDialog);
+                selectDialog(newDialog);
                 controller.closeWindow();
             });
         } catch (IOException e) {
