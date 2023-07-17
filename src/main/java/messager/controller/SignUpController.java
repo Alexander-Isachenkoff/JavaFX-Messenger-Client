@@ -160,7 +160,7 @@ public class SignUpController {
     @FXML
     private void onFinish() {
         User user = this.signUpResponse.getUser();
-        ControllerUtils.loadDialogsView(user, NodeUtils.getParentTab(nameField));
+        ControllerUtils.showDialogsView(user, NodeUtils.getParentTab(nameField));
     }
 
 }

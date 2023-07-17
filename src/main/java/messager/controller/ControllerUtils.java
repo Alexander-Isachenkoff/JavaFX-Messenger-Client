@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class ControllerUtils {
 
-    public static void loadDialogsView(User user, Tab tab) {
+    public static void showDialogsView(User user, Tab tab) {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/dialogs.fxml"));
         Parent load;
         try {
