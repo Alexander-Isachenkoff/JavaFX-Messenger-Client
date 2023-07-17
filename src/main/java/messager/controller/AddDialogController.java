@@ -31,7 +31,6 @@ public class AddDialogController {
     private List<User> users;
     private Consumer<User> onUserSelected = user -> {
     };
-    private User currentUser;
     private double resizePressedX;
     private double resizePressedY;
     private double movePressedX;
@@ -91,7 +90,6 @@ public class AddDialogController {
     }
 
     public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
         client.post(new UsersListRequest(currentUser.getId()));
         UsersListResponse response = new Server().accept(UsersListResponse.class);
         users = response.getUsers();
