@@ -6,7 +6,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import messager.Main;
 import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.User;
@@ -61,7 +60,7 @@ public class SignInController {
     }
 
     private void signIn(User user) {
-        Main.getMainController().showDialogsView(user);
+        MainController.getInstance().showDialogsView(user);
     }
 
     private void onEnterPressed(KeyEvent event) {
@@ -72,7 +71,7 @@ public class SignInController {
 
     @FXML
     private void onSignUp() {
-        Main.getMainController().showSignUpView();
+        MainController.getInstance().showSignUpView();
     }
 
 }

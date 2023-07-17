@@ -12,8 +12,18 @@ import java.io.IOException;
 
 public class MainController {
 
+    private static MainController instance;
+
     @FXML
     private TabPane tabPane;
+
+    public MainController() {
+        instance = this;
+    }
+
+    public static MainController getInstance() {
+        return instance;
+    }
 
     @FXML
     private void initialize() {
@@ -84,5 +94,4 @@ public class MainController {
     private Tab getCurrentTab() {
         return tabPane.getSelectionModel().getSelectedItem();
     }
-
 }

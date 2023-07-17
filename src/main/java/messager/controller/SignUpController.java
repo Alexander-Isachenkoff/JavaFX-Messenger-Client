@@ -11,7 +11,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import messager.Main;
 import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.User;
@@ -124,7 +123,7 @@ public class SignUpController {
 
     @FXML
     private void onSignIn() {
-        Main.getMainController().showSignInView();
+        MainController.getInstance().showSignInView();
     }
 
     @FXML
@@ -152,7 +151,7 @@ public class SignUpController {
     @FXML
     private void onFinish() {
         User user = this.signUpResponse.getUser();
-        Main.getMainController().showDialogsView(user);
+        MainController.getInstance().showDialogsView(user);
     }
 
 }
