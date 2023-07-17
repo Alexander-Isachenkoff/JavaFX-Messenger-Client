@@ -14,7 +14,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -33,6 +32,7 @@ import messager.response.AddDialogResponse;
 import messager.response.DialogsListResponse;
 import messager.server.Server;
 import messager.view.DialogListCellFactory;
+import messager.view.NodeUtils;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -157,6 +157,6 @@ public class DialogsController {
     public void setUser(User user) {
         this.user = user;
         userNameLabel.setText(user.getName());
-        userImageCircle.setFill(new ImagePattern(user.getImageToView()));
+        NodeUtils.setCircleStyle(userImageCircle, user);
     }
 }

@@ -1,9 +1,9 @@
 package messager.controller;
 
 import javafx.scene.control.Label;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import messager.entities.User;
+import messager.view.NodeUtils;
 
 public class UserCellController {
 
@@ -12,7 +12,7 @@ public class UserCellController {
 
     public void setUser(User user) {
         dialogTitle.setText(user.getName());
-        imageCircle.setFill(new ImagePattern(user.getImageToView()));
+        NodeUtils.setCircleStyle(imageCircle, user);
     }
 
 }

@@ -6,7 +6,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import messager.client.Client;
 import messager.client.ClientXML;
@@ -18,6 +17,7 @@ import messager.requests.MessagesRequest;
 import messager.response.MessagesResponse;
 import messager.server.Server;
 import messager.view.MessageCellFactory;
+import messager.view.NodeUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -100,7 +100,7 @@ public class DialogController {
                     .findFirst();
             User userTo = optionalUser.get();
             userNameLabel.setText(userTo.getName());
-            userImageCircle.setFill(new ImagePattern(userTo.getImageToView()));
+            NodeUtils.setCircleStyle(userImageCircle, userTo);
         } else {
             messagesList.getItems().clear();
         }

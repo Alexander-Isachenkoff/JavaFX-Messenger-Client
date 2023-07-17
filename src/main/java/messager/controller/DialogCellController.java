@@ -2,10 +2,10 @@ package messager.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import messager.entities.Dialog;
 import messager.entities.User;
+import messager.view.NodeUtils;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -38,7 +38,7 @@ public class DialogCellController {
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
                 dialogTitle.setText(user.getName());
-                imageCircle.setFill(new ImagePattern(user.getImageToView()));
+                NodeUtils.setCircleStyle(imageCircle, user);
             }
         }
     }

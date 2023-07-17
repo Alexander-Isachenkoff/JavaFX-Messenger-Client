@@ -3,10 +3,10 @@ package messager.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import messager.entities.TextMessage;
 import messager.entities.User;
+import messager.view.NodeUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +38,6 @@ public class MessageCellController {
         String format = time.format(TIME_FORMATTER);
         timeLabel.setText(format);
 
-        imageCircle.setFill(new ImagePattern(userFrom.getImageToView()));
+        NodeUtils.setCircleStyle(imageCircle, userFrom);
     }
 }
