@@ -66,20 +66,7 @@ public class SignInController {
     }
 
     private void signIn(User user) {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/dialogs.fxml"));
-        Parent load;
-        try {
-            load = fxmlLoader.load();
-            DialogsController controller = fxmlLoader.getController();
-            controller.setUser(user);
-            controller.postInit();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        Tab currentTab = NodeUtils.getParentTab(nameField);
-        currentTab.setText(user.getName());
-        currentTab.setContent(load);
+        ControllerUtils.loadDialogsView(user, NodeUtils.getParentTab(nameField));
     }
 
     private void onEnterPressed(KeyEvent event) {
