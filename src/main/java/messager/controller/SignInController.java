@@ -66,7 +66,7 @@ public class SignInController {
     }
 
     private void signIn(User user) {
-        ControllerUtils.showDialogsView(user, NodeUtils.getParentTab(nameField));
+        Main.getMainController().showDialogsView(user);
     }
 
     private void onEnterPressed(KeyEvent event) {

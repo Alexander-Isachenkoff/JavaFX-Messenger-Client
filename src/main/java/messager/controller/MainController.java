@@ -6,10 +6,12 @@ import javafx.scene.Parent;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import messager.Main;
+import messager.entities.User;
 
 import java.io.IOException;
 
 public class MainController {
+
     @FXML
     private TabPane tabPane;
 
@@ -36,4 +38,21 @@ public class MainController {
         tabPane.getTabs().add(signInTab);
         tabPane.getSelectionModel().select(signInTab);
     }
+
+    public void showDialogsView(User user) {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/dialogs.fxml"));
+        Parent load;
+        try {
+            load = fxmlLoader.load();
+            DialogsController controller = fxmlLoader.getController();
+            controller.setUser(user);
+            controller.postInit();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Tab tab = tabPane.getSelectionModel().getSelectedItem();
+        tab.setText(user.getName());
+        tab.setContent(load);
+    }
+
 }
