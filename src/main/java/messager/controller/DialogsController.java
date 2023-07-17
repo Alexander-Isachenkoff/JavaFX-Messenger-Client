@@ -4,12 +4,15 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
@@ -17,6 +20,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import javafx.util.Pair;
 import messager.Main;
 import messager.client.Client;
 import messager.client.ClientXML;
@@ -32,24 +36,27 @@ import messager.view.DialogListCellFactory;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DialogsController {
 
     private final Client client = new ClientXML();
+    private final Map<Dialog, Pair<Node, DialogController>> dialogNodeMap = new HashMap<>();
+
+    @FXML
+    private VBox dialogWrapper;
     @FXML
     private Circle userImageCircle;
     @FXML
     private Label userNameLabel;
     @FXML
     private ListView<Dialog> dialogsList;
-    @FXML
-    private DialogController dialogController;
-
     private User user;
 
     @FXML
     private void initialize() {
-        DialogListCellFactory cellFactory = new DialogListCellFactory(() -> user);
+        DialogListCellFactory cellFactory = new DialogListCellFactory(() -> user); // TODO: 11.07.2023 Переделать доступ к текущему юзеру
         cellFactory.setOnDelete(dialog -> {
             String text = String.format("Вы уверены, что хотите удалить диалог \"%s\"?", "dialogTitle.getText()");
             Alert alert = new Alert(Alert.AlertType.INFORMATION, text, ButtonType.YES, ButtonType.NO);
@@ -59,15 +66,42 @@ public class DialogsController {
                 loadDialogs();
             }
         });
-        dialogsList.setCellFactory(cellFactory); // TODO: 11.07.2023 Переделать доступ к текущему юзеру
+        dialogsList.setCellFactory(cellFactory);
 
         dialogsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, dialog) -> {
-            dialogController.setDialog(dialog);
+            showDialog(dialog);
         });
 
-        Timer timer = new Timer(5000, actionEvent -> Platform.runLater(() -> dialogController.onMessagesRefresh()));
+        Timer timer = new Timer(5000, actionEvent -> Platform.runLater(() -> {
+            Dialog dialog = dialogsList.getSelectionModel().getSelectedItem();
+            if (dialog != null) {
+                DialogController dialogController = dialogNodeMap.get(dialog).getValue();
+                dialogController.onMessagesRefresh();
+            }
+        }));
         timer.setRepeats(true);
         timer.start();
+    }
+
+    private void showDialog(Dialog dialog) {
+        if (dialogNodeMap.containsKey(dialog)) {
+            dialogWrapper.getChildren().setAll(dialogNodeMap.get(dialog).getKey());
+        } else {
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/dialog.fxml"));
+            Parent node;
+            DialogController controller;
+            try {
+                node = fxmlLoader.load();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            controller = fxmlLoader.getController();
+            controller.setCurrentUser(user);
+            controller.setDialog(dialog);
+            dialogNodeMap.put(dialog, new Pair<>(node, controller));
+            dialogWrapper.getChildren().setAll(node);
+            VBox.setVgrow(node, Priority.ALWAYS);
+        }
     }
 
     void selectDialog(Dialog dialog) {
@@ -120,14 +154,9 @@ public class DialogsController {
         stage.setY(owner.getY() + owner.getHeight() / 2 - stage.getHeight() / 2);
     }
 
-    public User getUser() {
-        return user;
-    }
-
     public void setUser(User user) {
         this.user = user;
         userNameLabel.setText(user.getName());
         userImageCircle.setFill(new ImagePattern(user.getImageToView()));
-        dialogController.setCurrentUser(user);
     }
 }
