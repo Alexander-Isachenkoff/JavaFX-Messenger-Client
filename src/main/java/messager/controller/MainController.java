@@ -50,9 +50,39 @@ public class MainController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Tab tab = tabPane.getSelectionModel().getSelectedItem();
+        Tab tab = getCurrentTab();
         tab.setText(user.getName());
         tab.setContent(load);
+    }
+
+    public void showSignInView() {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/sign_in.fxml"));
+        Parent load;
+        try {
+            load = fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Tab tab = getCurrentTab();
+        tab.setText("Вход");
+        tab.setContent(load);
+    }
+
+    public void showSignUpView() {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/sign_up.fxml"));
+        Parent load;
+        try {
+            load = fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Tab tab = getCurrentTab();
+        tab.setText("Регистрация");
+        tab.setContent(load);
+    }
+
+    private Tab getCurrentTab() {
+        return tabPane.getSelectionModel().getSelectedItem();
     }
 
 }

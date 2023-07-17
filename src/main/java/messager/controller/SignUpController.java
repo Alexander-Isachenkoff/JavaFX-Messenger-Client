@@ -1,9 +1,10 @@
 package messager.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -123,16 +124,7 @@ public class SignUpController {
 
     @FXML
     private void onSignIn() {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/sign_in.fxml"));
-        Parent load;
-        try {
-            load = fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Tab currentTab = NodeUtils.getParentTab(nameField);
-        currentTab.setText("Вход");
-        currentTab.setContent(load);
+        Main.getMainController().showSignInView();
     }
 
     @FXML
