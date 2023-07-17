@@ -83,6 +83,7 @@ public class DialogsController {
         try {
             load = fxmlLoader.load();
             AddDialogController controller = fxmlLoader.getController();
+            controller.setCurrentUser(user);
             controller.setOnUserSelected(selectedUser -> {
                 client.post(new AddDialogRequest(user, selectedUser));
                 AddDialogResponse addDialogResponse = new Server().accept(AddDialogResponse.class);

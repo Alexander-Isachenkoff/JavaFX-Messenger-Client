@@ -31,6 +31,7 @@ public class AddDialogController {
     private List<User> users;
     private Consumer<User> onUserSelected = user -> {
     };
+    private User currentUser;
     private double resizePressedX;
     private double resizePressedY;
     private double movePressedX;
@@ -50,11 +51,6 @@ public class AddDialogController {
         usersListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, selectedUser) -> {
             onUserSelected.accept(selectedUser);
         });
-
-        client.post(new UsersListRequest());
-        UsersListResponse response = new Server().accept(UsersListResponse.class);
-        users = response.getUsers();
-        usersListView.setItems(FXCollections.observableList(users));
 
         corner.setOnMousePressed(event -> {
             resizePressedX = event.getX();
@@ -94,4 +90,11 @@ public class AddDialogController {
         return (Stage) usersListView.getScene().getWindow();
     }
 
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+        client.post(new UsersListRequest(currentUser.getId()));
+        UsersListResponse response = new Server().accept(UsersListResponse.class);
+        users = response.getUsers();
+        usersListView.setItems(FXCollections.observableList(users));
+    }
 }
