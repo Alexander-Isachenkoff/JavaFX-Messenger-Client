@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlRootElement
-public class UsersListRequest {
+public class UsersListRequest implements Request {
     @XmlAttribute
     private long userId;
 }

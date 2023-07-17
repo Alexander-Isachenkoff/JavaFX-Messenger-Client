@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.paint.Color;
@@ -21,6 +23,7 @@ import messager.client.ClientXML;
 import messager.entities.Dialog;
 import messager.entities.User;
 import messager.requests.AddDialogRequest;
+import messager.requests.DeleteDialogRequest;
 import messager.requests.DialogsListRequest;
 import messager.response.AddDialogResponse;
 import messager.response.DialogsListResponse;
@@ -46,13 +49,23 @@ public class DialogsController {
 
     @FXML
     private void initialize() {
-        dialogsList.setCellFactory(new DialogListCellFactory(() -> user)); // TODO: 11.07.2023 Переделать доступ к текущему юзеру
+        DialogListCellFactory cellFactory = new DialogListCellFactory(() -> user);
+        cellFactory.setOnDelete(dialog -> {
+            String text = String.format("Вы уверены, что хотите удалить диалог \"%s\"?", "dialogTitle.getText()");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, text, ButtonType.YES, ButtonType.NO);
+            alert.showAndWait();
+            if (alert.getResult() == ButtonType.YES) {
+                new ClientXML().post(new DeleteDialogRequest(dialog.getId()));
+                loadDialogs();
+            }
+        });
+        dialogsList.setCellFactory(cellFactory); // TODO: 11.07.2023 Переделать доступ к текущему юзеру
 
         dialogsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, dialog) -> {
             dialogController.setDialog(dialog);
         });
 
-        Timer timer = new Timer(1000, actionEvent -> Platform.runLater(() -> dialogController.onMessagesRefresh()));
+        Timer timer = new Timer(5000, actionEvent -> Platform.runLater(() -> dialogController.onMessagesRefresh()));
         timer.setRepeats(true);
         timer.start();
     }

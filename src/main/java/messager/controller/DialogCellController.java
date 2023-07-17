@@ -8,6 +8,7 @@ import messager.entities.Dialog;
 import messager.entities.User;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class DialogCellController {
 
@@ -20,7 +21,13 @@ public class DialogCellController {
     @FXML
     private Circle imageCircle;
 
+    private Dialog dialog;
+
+    private Consumer<Dialog> onDelete = dialog -> {
+    };
+
     public void setDialog(Dialog dialog, User currentUser) {
+        this.dialog = dialog;
         if (dialog.getName() != null) {
             dialogTitle.setText(dialog.getName());
         } else {
@@ -36,4 +43,12 @@ public class DialogCellController {
         }
     }
 
+    @FXML
+    private void onDelete() {
+        onDelete.accept(dialog);
+    }
+
+    public void setOnDelete(Consumer<Dialog> onDelete) {
+        this.onDelete = onDelete;
+    }
 }

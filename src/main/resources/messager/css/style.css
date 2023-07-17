@@ -125,6 +125,10 @@
     -fx-background-color: none;
     -fx-padding: 0;
     -fx-font-size: 1;
+    -fx-pref-width: 16;
+    -fx-pref-height: 16;
+    -fx-min-height: -Infinity;
+    -fx-min-height: -Infinity;
 }
 
 .line {

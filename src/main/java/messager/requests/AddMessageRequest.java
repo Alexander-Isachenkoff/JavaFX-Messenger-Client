@@ -11,9 +11,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlRootElement
-public class SignInRequest implements Request {
+public class AddMessageRequest implements Request {
     @XmlElement
-    private String userName;
+    private long dialogId;
     @XmlElement
-    private String password;
+    private long userId;
+    @XmlElement
+    private String text;
+    @XmlElement
+    private String dateTime;
 }

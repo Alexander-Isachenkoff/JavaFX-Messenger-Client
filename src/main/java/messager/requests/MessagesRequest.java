@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlRootElement
-public class MessagesRequest {
+public class MessagesRequest implements Request {
     @XmlElement
     private long dialogId;
 }

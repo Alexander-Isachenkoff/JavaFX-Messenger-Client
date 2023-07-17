@@ -13,6 +13,7 @@ import messager.client.ClientXML;
 import messager.entities.Dialog;
 import messager.entities.TextMessage;
 import messager.entities.User;
+import messager.requests.AddMessageRequest;
 import messager.requests.MessagesRequest;
 import messager.response.MessagesResponse;
 import messager.server.Server;
@@ -71,8 +72,8 @@ public class DialogController {
         if (text.trim().isEmpty()) {
             return;
         }
-        TextMessage message = new TextMessage(currentUser, text, LocalDateTime.now().toString(), dialog);
-        client.post(message);
+        AddMessageRequest request = new AddMessageRequest(dialog.getId(), currentUser.getId(), text, LocalDateTime.now().toString());
+        client.post(request);
         textArea.clear();
         textArea.requestFocus();
         onMessagesRefresh();

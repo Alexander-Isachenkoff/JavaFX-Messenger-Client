@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlRootElement
-public class AddDialogRequest {
+public class AddDialogRequest implements Request {
     @XmlElement
     private User userFrom;
     @XmlElement

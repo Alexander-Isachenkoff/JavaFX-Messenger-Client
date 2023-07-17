@@ -11,9 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlRootElement
-public class SignInRequest implements Request {
+public class DeleteDialogRequest implements Request {
     @XmlElement
-    private String userName;
-    @XmlElement
-    private String password;
+    private long dialogId;
 }
