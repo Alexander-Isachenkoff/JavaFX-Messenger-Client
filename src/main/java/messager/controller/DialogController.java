@@ -16,13 +16,13 @@ import messager.entities.User;
 import messager.requests.AddMessageRequest;
 import messager.requests.MessagesRequest;
 import messager.response.MessagesResponse;
-import messager.server.Server;
 import messager.view.MessageCellFactory;
 import messager.view.NodeUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class DialogController {
@@ -60,7 +60,7 @@ public class DialogController {
     @FXML
     public void onMessagesRefresh() {
         if (dialog != null) {
-            messagesList.getItems().addAll(loadNewMessages(dialog));
+            loadNewMessages(dialog, messages -> messagesList.getItems().addAll(messages));
         }
     }
 
@@ -81,11 +81,13 @@ public class DialogController {
         onMessagesRefresh();
     }
 
-    private List<TextMessage> loadNewMessages(Dialog dialog) {
-        List<TextMessage> messages = loadAllMessages(dialog);
-        return messages.stream()
-                .filter(message -> messagesList.getItems().stream().noneMatch(message1 -> message1.getId() == message.getId()))
-                .collect(Collectors.toList());
+    private void loadNewMessages(Dialog dialog, Consumer<List<TextMessage>> onLoad) {
+        loadAllMessages(dialog, messages -> {
+            List<TextMessage> newMessages = messages.stream()
+                    .filter(message -> messagesList.getItems().stream().noneMatch(message1 -> message1.getId() == message.getId()))
+                    .collect(Collectors.toList());
+            onLoad.accept(newMessages);
+        });
     }
 
     public void setCurrentUser(User currentUser) {
@@ -95,23 +97,22 @@ public class DialogController {
     public void setDialog(Dialog dialog) {
         this.dialog = dialog;
         if (dialog != null) {
-            List<TextMessage> messages = loadAllMessages(dialog);
-            messagesList.setItems(FXCollections.observableArrayList(messages));
-            Optional<User> optionalUser = dialog.getUsers().stream()
-                    .filter(user -> user.getId() != currentUser.getId())
-                    .findFirst();
-            User userTo = optionalUser.get();
-            userNameLabel.setText(userTo.getName());
-            NodeUtils.setCircleStyle(userImageCircle, userTo);
+            loadAllMessages(dialog, messages -> {
+                messagesList.setItems(FXCollections.observableArrayList(messages));
+                Optional<User> optionalUser = dialog.getUsers().stream()
+                        .filter(user -> user.getId() != currentUser.getId())
+                        .findFirst();
+                User userTo = optionalUser.get();
+                userNameLabel.setText(userTo.getName());
+                NodeUtils.setCircleStyle(userImageCircle, userTo);
+            });
         } else {
             messagesList.getItems().clear();
         }
     }
 
-    private List<TextMessage> loadAllMessages(Dialog dialog) {
-        client.post(new MessagesRequest(dialog.getId()));
-        MessagesResponse messagesResponse = new Server().accept(MessagesResponse.class);
-        return messagesResponse.getMessages();
+    private void loadAllMessages(Dialog dialog, Consumer<List<TextMessage>> onLoad) {
+        client.post(new MessagesRequest(dialog.getId()), MessagesResponse.class, response -> onLoad.accept(response.getMessages()));
     }
 
 }
