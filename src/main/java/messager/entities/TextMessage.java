@@ -22,14 +22,5 @@ public class TextMessage {
     private String message;
     @XmlAttribute
     private String dateTime;
-    @XmlElement
-    private Dialog dialog;
-
-    public TextMessage(User userFrom, String message, String dateTime, Dialog dialog) {
-        this.userFrom = userFrom;
-        this.message = message;
-        this.dateTime = dateTime;
-        this.dialog = dialog;
-    }
 
 }

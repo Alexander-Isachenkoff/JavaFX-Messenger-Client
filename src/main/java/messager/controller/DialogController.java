@@ -14,6 +14,7 @@ import messager.entities.Dialog;
 import messager.entities.TextMessage;
 import messager.entities.User;
 import messager.requests.AddMessageRequest;
+import messager.requests.MessagesReadRequest;
 import messager.requests.MessagesRequest;
 import messager.response.MessagesResponse;
 import messager.view.MessageCellFactory;
@@ -60,7 +61,13 @@ public class DialogController {
     @FXML
     public void onMessagesRefresh() {
         if (dialog != null) {
-            loadNewMessages(dialog, messages -> messagesList.getItems().addAll(messages));
+            loadNewMessages(messages -> {
+                if (!messages.isEmpty()) {
+                    messagesList.getItems().addAll(messages);
+                    List<Long> readMessagesId = messages.stream().map(TextMessage::getId).collect(Collectors.toList());
+                    client.post(new MessagesReadRequest(currentUser.getId(), readMessagesId));
+                }
+            });
         }
     }
 
@@ -81,15 +88,6 @@ public class DialogController {
         onMessagesRefresh();
     }
 
-    private void loadNewMessages(Dialog dialog, Consumer<List<TextMessage>> onLoad) {
-        loadAllMessages(dialog, messages -> {
-            List<TextMessage> newMessages = messages.stream()
-                    .filter(message -> messagesList.getItems().stream().noneMatch(message1 -> message1.getId() == message.getId()))
-                    .collect(Collectors.toList());
-            onLoad.accept(newMessages);
-        });
-    }
-
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
     }
@@ -97,7 +95,7 @@ public class DialogController {
     public void setDialog(Dialog dialog) {
         this.dialog = dialog;
         if (dialog != null) {
-            loadAllMessages(dialog, messages -> {
+            loadAllMessages(messages -> {
                 messagesList.setItems(FXCollections.observableArrayList(messages));
                 Optional<User> optionalUser = dialog.getUsers().stream()
                         .filter(user -> user.getId() != currentUser.getId())
@@ -111,8 +109,12 @@ public class DialogController {
         }
     }
 
-    private void loadAllMessages(Dialog dialog, Consumer<List<TextMessage>> onLoad) {
-        client.post(new MessagesRequest(dialog.getId()), MessagesResponse.class, response -> onLoad.accept(response.getMessages()));
+    private void loadNewMessages(Consumer<List<TextMessage>> onLoad) {
+        client.post(new MessagesRequest(currentUser.getId(), dialog.getId(), true), MessagesResponse.class, response -> onLoad.accept(response.getMessages()));
+    }
+
+    private void loadAllMessages(Consumer<List<TextMessage>> onLoad) {
+        client.post(new MessagesRequest(currentUser.getId(), dialog.getId(), false), MessagesResponse.class, response -> onLoad.accept(response.getMessages()));
     }
 
 }
