@@ -89,19 +89,24 @@
 
 .messages-list .list-cell {
     -fx-background-color: none;
-    -fx-padding: 10;
+    -fx-padding: 0;
+}
+
+.messages-list .list-cell:selected {
+    -fx-background-color: lightgray;
+}
+
+.messages-list .list-cell:selected .label {
+    -fx-text-fill: #333;
+}
+
+.messages-list .list-cell:selected .time-label {
+    -fx-text-fill: gray;
 }
 
 .message {
+    -fx-padding: 10;
     -fx-background-radius: 15;
-}
-
-.my_message {
-    -fx-alignment: TOP_RIGHT;
-}
-
-.not_my_message {
-    -fx-alignment: TOP_LEFT;
 }
 
 .my_message .message {
@@ -115,6 +120,7 @@
 .dialogs-split-pane .split-pane-divider {
     -fx-background-color: lightgrey;
     -fx-pref-width: 4;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0,0);
 }
 
 .chat-split-pane  {

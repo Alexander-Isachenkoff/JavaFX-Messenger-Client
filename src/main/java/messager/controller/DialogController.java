@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Circle;
@@ -52,6 +53,7 @@ public class DialogController {
             }
         });
 
+        messagesList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         messagesList.setCellFactory(new MessageCellFactory(() -> currentUser));
     }
 
