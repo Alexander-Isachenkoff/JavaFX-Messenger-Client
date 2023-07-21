@@ -11,18 +11,18 @@ import javafx.scene.shape.Circle;
 import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.Dialog;
+import messager.entities.PersonalDialog;
 import messager.entities.TextMessage;
 import messager.entities.User;
-import messager.requests.AddMessageRequest;
-import messager.requests.MessagesReadRequest;
-import messager.requests.MessagesRequest;
-import messager.response.MessagesResponse;
+import messager.requests.Request;
+import messager.requests.StringList;
+import messager.requests.TransferableObject;
+import messager.response.MessagesList;
 import messager.view.MessageCellFactory;
 import messager.view.NodeUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -65,7 +65,10 @@ public class DialogController {
                 if (!messages.isEmpty()) {
                     messagesList.getItems().addAll(messages);
                     List<Long> readMessagesId = messages.stream().map(TextMessage::getId).collect(Collectors.toList());
-                    client.post(new MessagesReadRequest(currentUser.getId(), readMessagesId));
+                    TransferableObject params = new TransferableObject();
+                    params.put("userId", currentUser.getId());
+                    params.put("messagesId", StringList.of(readMessagesId));
+                    client.post(new Request("readMessages", params));
                 }
             });
         }
@@ -81,7 +84,12 @@ public class DialogController {
         if (text.trim().isEmpty()) {
             return;
         }
-        AddMessageRequest request = new AddMessageRequest(dialog.getId(), currentUser.getId(), text, LocalDateTime.now().toString());
+        TransferableObject params = new TransferableObject();
+        params.put("dialogId", dialog.getId());
+        params.put("userId", currentUser.getId());
+        params.put("text", text);
+        params.put("dateTime", LocalDateTime.now().toString());
+        Request request = new Request("addMessage", params);
         client.post(request);
         textArea.clear();
         textArea.requestFocus();
@@ -97,12 +105,17 @@ public class DialogController {
         if (dialog != null) {
             loadAllMessages(messages -> {
                 messagesList.setItems(FXCollections.observableArrayList(messages));
-                Optional<User> optionalUser = dialog.getUsers().stream()
-                        .filter(user -> user.getId() != currentUser.getId())
-                        .findFirst();
-                User userTo = optionalUser.get();
-                userNameLabel.setText(userTo.getName());
-                NodeUtils.setCircleStyle(userImageCircle, userTo);
+                if (dialog instanceof PersonalDialog) {
+                    PersonalDialog personalDialog = (PersonalDialog) dialog;
+                    User userTo;
+                    if (personalDialog.getUser1().getId() == currentUser.getId()) {
+                        userTo = personalDialog.getUser2();
+                    } else {
+                        userTo = personalDialog.getUser1();
+                    }
+                    userNameLabel.setText(userTo.getName());
+                    NodeUtils.setCircleStyle(userImageCircle, userTo);
+                }
             });
         } else {
             messagesList.getItems().clear();
@@ -110,11 +123,19 @@ public class DialogController {
     }
 
     private void loadNewMessages(Consumer<List<TextMessage>> onLoad) {
-        client.post(new MessagesRequest(currentUser.getId(), dialog.getId(), true), MessagesResponse.class, response -> onLoad.accept(response.getMessages()));
+        TransferableObject params = new TransferableObject();
+        params.put("userId", currentUser.getId());
+        params.put("dialogId", dialog.getId());
+        params.put("unreadOnly", true);
+        client.post(new Request("getMessages", params), MessagesList.class, response -> onLoad.accept(response.getMessages()));
     }
 
     private void loadAllMessages(Consumer<List<TextMessage>> onLoad) {
-        client.post(new MessagesRequest(currentUser.getId(), dialog.getId(), false), MessagesResponse.class, response -> onLoad.accept(response.getMessages()));
+        TransferableObject params = new TransferableObject();
+        params.put("userId", currentUser.getId());
+        params.put("dialogId", dialog.getId());
+        params.put("unreadOnly", false);
+        client.post(new Request("getMessages", params), MessagesList.class, response -> onLoad.accept(response.getMessages()));
     }
 
 }

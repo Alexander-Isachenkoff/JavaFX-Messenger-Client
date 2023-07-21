@@ -24,12 +24,11 @@ import messager.Main;
 import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.Dialog;
+import messager.entities.PersonalDialog;
 import messager.entities.User;
-import messager.requests.AddDialogRequest;
-import messager.requests.DeleteDialogRequest;
-import messager.requests.DialogsListRequest;
-import messager.response.AddDialogResponse;
-import messager.response.DialogsListResponse;
+import messager.requests.Request;
+import messager.requests.TransferableObject;
+import messager.response.PersonalDialogsResponse;
 import messager.server.Server;
 import messager.view.DialogListCellFactory;
 import messager.view.NodeUtils;
@@ -62,7 +61,9 @@ public class DialogsController {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, text, ButtonType.YES, ButtonType.NO);
             alert.showAndWait();
             if (alert.getResult() == ButtonType.YES) {
-                new ClientXML().post(new DeleteDialogRequest(dialog.getId()));
+                TransferableObject params = new TransferableObject();
+                params.put("dialogId", dialog.getId());
+                new ClientXML().post(new Request("deleteDialog", params));
                 loadDialogs();
             }
         });
@@ -114,8 +115,10 @@ public class DialogsController {
     }
 
     public void loadDialogs() {
-        client.post(new DialogsListRequest(user.getId()));
-        DialogsListResponse response = new Server().accept(DialogsListResponse.class);
+        TransferableObject params = new TransferableObject();
+        params.put("userId", user.getId());
+        client.post(new Request("getPersonalDialogs", params));
+        PersonalDialogsResponse response = new Server().accept(PersonalDialogsResponse.class);
         dialogsList.setItems(FXCollections.observableArrayList(response.getDialogs()));
     }
 
@@ -132,9 +135,11 @@ public class DialogsController {
             AddDialogController controller = fxmlLoader.getController();
             controller.setCurrentUser(user);
             controller.setOnUserSelected(selectedUser -> {
-                client.post(new AddDialogRequest(user, selectedUser));
-                AddDialogResponse addDialogResponse = new Server().accept(AddDialogResponse.class);
-                Dialog newDialog = addDialogResponse.getDialog();
+                TransferableObject params = new TransferableObject();
+                params.put("userFromId", user.getId());
+                params.put("userToId", selectedUser.getId());
+                client.post(new Request("addDialog", params));
+                PersonalDialog newDialog = new Server().accept(PersonalDialog.class);
                 dialogsList.getItems().add(newDialog);
                 selectDialog(newDialog);
                 controller.closeWindow();

@@ -14,7 +14,8 @@ import javafx.stage.Stage;
 import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.User;
-import messager.requests.SignUpRequest;
+import messager.requests.Request;
+import messager.requests.TransferableObject;
 import messager.response.SignUpResponse;
 import messager.server.Server;
 import messager.util.FileUtils;
@@ -81,13 +82,13 @@ public class SignUpController {
     }
 
     private SignUpResponse postSignUpData() {
-        SignUpRequest request = createSignUpRequest();
+        Request request = createSignUpRequest();
         client.post(request);
         Server server = new Server();
         return server.accept(SignUpResponse.class);
     }
 
-    private SignUpRequest createSignUpRequest() {
+    private Request createSignUpRequest() {
         String encodedImage = null;
         String imageFormat = null;
         if (imageFile != null) {
@@ -99,7 +100,12 @@ public class SignUpController {
                 throw new RuntimeException(e);
             }
         }
-        return new SignUpRequest(nameField.getText(), passwordField.getText(), encodedImage, imageFormat);
+        TransferableObject params = new TransferableObject();
+        params.put("userName", nameField.getText());
+        params.put("password", passwordField.getText());
+        params.put("encodedImage", encodedImage);
+        params.put("imageFormat", imageFormat);
+        return new Request("signUp", params);
     }
 
     private void showResponse(SignUpResponse.SignUpStatus status) {

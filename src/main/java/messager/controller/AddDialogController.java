@@ -10,8 +10,9 @@ import javafx.stage.Stage;
 import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.User;
-import messager.requests.UsersListRequest;
-import messager.response.UsersListResponse;
+import messager.requests.Request;
+import messager.requests.TransferableObject;
+import messager.response.UsersList;
 import messager.server.Server;
 import messager.view.UserListCellFactory;
 
@@ -90,8 +91,10 @@ public class AddDialogController {
     }
 
     public void setCurrentUser(User currentUser) {
-        client.post(new UsersListRequest(currentUser.getId()));
-        UsersListResponse response = new Server().accept(UsersListResponse.class);
+        TransferableObject params = new TransferableObject();
+        params.put("userId", currentUser.getId());
+        client.post(new Request("usersList", params));
+        UsersList response = new Server().accept(UsersList.class);
         users = response.getUsers();
         usersListView.setItems(FXCollections.observableList(users));
     }

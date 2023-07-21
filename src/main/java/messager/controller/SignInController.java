@@ -9,7 +9,8 @@ import javafx.scene.paint.Color;
 import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.User;
-import messager.requests.SignInRequest;
+import messager.requests.Request;
+import messager.requests.TransferableObject;
 import messager.response.SignInResponse;
 import messager.server.Server;
 
@@ -36,9 +37,10 @@ public class SignInController {
     }
 
     private void postLoginData() {
-        String userName = nameField.getText();
-        String password = passwordField.getText();
-        client.post(new SignInRequest(userName, password));
+        TransferableObject params = new TransferableObject();
+        params.put("userName", nameField.getText());
+        params.put("password", passwordField.getText());
+        client.post(new Request("signIn", params));
 
         Server server = new Server();
         SignInResponse response = server.accept(SignInResponse.class);
@@ -54,7 +56,7 @@ public class SignInController {
                 responseLabel.setText("Неверный пароль");
                 break;
             case USER_NOT_FOUND:
-                responseLabel.setText(String.format("Не зарегистрирован пользователь \"%s\"", userName));
+                responseLabel.setText(String.format("Не зарегистрирован пользователь \"%s\"", nameField.getText()));
                 break;
         }
     }

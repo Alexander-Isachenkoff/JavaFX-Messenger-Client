@@ -1,19 +1,21 @@
-package messager.requests;
+package messager.entities;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+@EqualsAndHashCode
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @XmlRootElement
-public class SignInRequest implements Request {
+public class PersonalDialog extends Dialog {
     @XmlElement
-    private String userName;
+    private User user1;
     @XmlElement
-    private String password;
+    private User user2;
 }
