@@ -54,25 +54,19 @@ public class SignInController {
             return;
         }
 
-        Server server = new Server();
-        SignInResponse response;
-        try {
-            response = server.accept(SignInResponse.class);
-        } catch (SocketTimeoutException e) {
-            throw new RuntimeException(e);
-        }
-
-        switch (response.getStatus()) {
-            case OK:
-                signIn(response.getUser());
-                break;
-            case WRONG_PASSWORD:
-                responseLabel.setText("Неверный пароль");
-                break;
-            case USER_NOT_FOUND:
-                responseLabel.setText(String.format("Не зарегистрирован пользователь \"%s\"", nameField.getText()));
-                break;
-        }
+        new Server().tryAccept(SignInResponse.class).ifPresent(response -> {
+            switch (response.getStatus()) {
+                case OK:
+                    signIn(response.getUser());
+                    break;
+                case WRONG_PASSWORD:
+                    responseLabel.setText("Неверный пароль");
+                    break;
+                case USER_NOT_FOUND:
+                    responseLabel.setText(String.format("Не зарегистрирован пользователь \"%s\"", nameField.getText()));
+                    break;
+            }
+        });
     }
 
     private void signIn(User user) {

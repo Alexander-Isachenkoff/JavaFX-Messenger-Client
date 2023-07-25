@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public abstract class Client {
@@ -50,19 +51,13 @@ public abstract class Client {
 
     public abstract void post(Object object) throws Exception;
 
-    public <T, R> void post(T request, Class<R> responseClass, Consumer<R> onResponse) {
+    public <T, R> void post(T request, Class<R> responseClass, Consumer<Optional<R>> onResponse) {
         new Thread(() -> {
             if (!tryPost(request)) {
                 return;
             }
-            R response;
-            try {
-                response = new Server().accept(responseClass);
-            } catch (SocketTimeoutException e) {
-                throw new RuntimeException(e);
-            }
-            R finalResponse = response;
-            Platform.runLater(() -> onResponse.accept(finalResponse));
+            Optional<R> optionalResponse = new Server().tryAccept(responseClass);
+            Platform.runLater(() -> onResponse.accept(optionalResponse));
         }).start();
     }
 

@@ -35,7 +35,6 @@ import messager.view.NodeUtils;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -122,13 +121,9 @@ public class DialogsController {
         if (!client.tryPost(new Request("getPersonalDialogs", params))) {
             return;
         }
-        PersonalDialogsResponse response;
-        try {
-            response = new Server().accept(PersonalDialogsResponse.class);
-        } catch (SocketTimeoutException e) {
-            throw new RuntimeException(e);
-        }
-        dialogsList.setItems(FXCollections.observableArrayList(response.getDialogs()));
+        new Server().tryAccept(PersonalDialogsResponse.class).ifPresent(response -> {
+            dialogsList.setItems(FXCollections.observableArrayList(response.getDialogs()));
+        });
     }
 
     public void postInit() {
@@ -150,15 +145,11 @@ public class DialogsController {
                 if (!client.tryPost(new Request("addDialog", params))) {
                     return;
                 }
-                PersonalDialog newDialog = null;
-                try {
-                    newDialog = new Server().accept(PersonalDialog.class);
-                } catch (SocketTimeoutException e) {
-                    throw new RuntimeException(e);
-                }
-                dialogsList.getItems().add(newDialog);
-                selectDialog(newDialog);
-                controller.closeWindow();
+                new Server().tryAccept(PersonalDialog.class).ifPresent(newDialog -> {
+                    dialogsList.getItems().add(newDialog);
+                    selectDialog(newDialog);
+                    controller.closeWindow();
+                });
             });
         } catch (IOException e) {
             throw new RuntimeException(e);

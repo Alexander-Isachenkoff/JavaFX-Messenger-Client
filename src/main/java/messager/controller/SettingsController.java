@@ -12,6 +12,7 @@ import messager.requests.TransferableObject;
 import messager.response.CheckAccessResponse;
 import messager.server.Server;
 import messager.util.AppProperties;
+import messager.view.AlertUtil;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -56,6 +57,8 @@ public class SettingsController {
             Label label2 = new Label("Превышено время ожидания ответа от сервера!");
             label2.setTextFill(Color.RED);
             statusVbox.getChildren().add(label2);
+        } catch (IOException e) {
+            AlertUtil.showErrorAlert(e.getMessage());
         }
     }
 
