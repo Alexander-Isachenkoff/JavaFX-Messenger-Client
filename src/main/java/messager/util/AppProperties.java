@@ -1,23 +1,35 @@
 package messager.util;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.IllegalFormatException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UnknownFormatConversionException;
 
 public final class AppProperties {
 
     private static final String PROPS_PATH = "properties.prop";
+    private static final Map<String, String> defaultValues;
     private static AppProperties appProperties;
+
+    static {
+        defaultValues = new HashMap<>();
+        defaultValues.put("serverAddress", "127.0.0.1");
+        defaultValues.put("showXml", "true");
+        defaultValues.put("serverPort", "11111");
+    }
+
     private final Properties properties = new Properties();
 
     private AppProperties() {
         try (FileInputStream fis = new FileInputStream(PROPS_PATH)) {
             properties.load(fis);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            createDefaultProperties();
         }
+        restoreMissingProperties();
     }
 
     public static AppProperties instance() {
@@ -27,27 +39,78 @@ public final class AppProperties {
         return appProperties;
     }
 
-    public static boolean getShowXml() {
-        return instance().getBoolean("showXml");
+    private void restoreMissingProperties() {
+        for (String key : defaultValues.keySet()) {
+            String property = properties.getProperty(key);
+            if (property == null) {
+                restoreProperty(key);
+            }
+        }
     }
 
-    public static String getServerAddress() {
-        return instance().getString("serverAddress");
+    public void setProperty(String name, String value) {
+        properties.setProperty(name, value);
+    }
+
+    public void save() {
+        try (FileOutputStream fos = new FileOutputStream(PROPS_PATH)) {
+            properties.store(fos, null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean getShowXml() {
+        return getBoolean("showXml");
+    }
+
+    public String getServerAddress() {
+        return getString("serverAddress");
+    }
+
+    public int getServerPort() {
+        return getInt("serverPort");
+    }
+
+    private String restoreProperty(String name) {
+        String defaultValue = defaultValues.get(name);
+        properties.setProperty(name, defaultValue);
+        save();
+        return defaultValue;
+    }
+
+    private void createDefaultProperties() {
+        defaultValues.forEach(properties::setProperty);
+        save();
     }
 
     String getString(String name) {
-        return properties.getProperty(name);
+        String property = properties.getProperty(name);
+        if (property == null) {
+            return restoreProperty(name);
+        }
+        return property;
     }
 
-    boolean getBoolean(String name) throws IllegalFormatException {
+    int getInt(String name) {
+        try {
+            return Integer.parseInt(properties.getProperty(name));
+        } catch (RuntimeException ex) {
+            restoreProperty(name);
+        }
+        return getInt(name);
+    }
+
+    boolean getBoolean(String name) throws UnknownFormatConversionException {
         String property = properties.getProperty(name);
-        if (property.equals("true")) {
+        if ("true".equals(property)) {
             return true;
         }
-        if (property.equals("false")) {
+        if ("false".equals(property)) {
             return false;
         }
-        throw new UnknownFormatConversionException(name + " = " + property);
+        restoreProperty(name);
+        return getBoolean(name);
     }
 
 }
