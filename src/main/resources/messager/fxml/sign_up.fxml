@@ -55,7 +55,7 @@
                             </padding>
                         </StackPane>
                         <Label text="Фото" GridPane.halignment="CENTER" />
-                  <Label fx:id="passwordCheckLabel" text="Пароли не совпадают" textFill="RED" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                  <Label fx:id="checkLabel" text="Пароли не совпадают" textFill="RED" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
                         <columnConstraints>
                             <ColumnConstraints />
                             <ColumnConstraints prefWidth="20.0" />
