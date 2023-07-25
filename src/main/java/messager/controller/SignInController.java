@@ -55,23 +55,26 @@ public class SignInController {
             return;
         }
 
+        SignInResponse response;
         try {
-            SignInResponse response = new Server().accept(SignInResponse.class);
-            switch (response.getStatus()) {
-                case OK:
-                    signIn(response.getUser());
-                    break;
-                case WRONG_PASSWORD:
-                    responseLabel.setText("Неверный пароль");
-                    break;
-                case USER_NOT_FOUND:
-                    responseLabel.setText(String.format("Не зарегистрирован пользователь \"%s\"", nameField.getText()));
-                    break;
-            }
+            response = new Server().accept(SignInResponse.class);
         } catch (SocketTimeoutException e) {
             responseLabel.setText("Превышено время ожидания ответа от сервера!");
+            return;
         } catch (IOException e) {
             AlertUtil.showErrorAlert(e.getMessage());
+            return;
+        }
+        switch (response.getStatus()) {
+            case OK:
+                signIn(response.getUser());
+                break;
+            case WRONG_PASSWORD:
+                responseLabel.setText("Неверный пароль");
+                break;
+            case USER_NOT_FOUND:
+                responseLabel.setText(String.format("Не зарегистрирован пользователь \"%s\"", nameField.getText()));
+                break;
         }
     }
 
