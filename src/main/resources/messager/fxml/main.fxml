@@ -8,9 +8,10 @@
 <VBox prefHeight="720" prefWidth="1200" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.171"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="messager.controller.MainController">
     <children>
-        <HBox alignment="TOP_RIGHT">
+        <HBox alignment="TOP_RIGHT" spacing="5.0">
             <children>
                 <Button mnemonicParsing="false" onAction="#onAdd" text="+"/>
+                <Button mnemonicParsing="false" onAction="#onSettings" text="🔄"/>
             </children>
             <padding>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>

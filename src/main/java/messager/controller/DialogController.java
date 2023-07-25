@@ -68,7 +68,7 @@ public class DialogController {
                     TransferableObject params = new TransferableObject();
                     params.put("userId", currentUser.getId());
                     params.put("messagesId", StringList.of(readMessagesId));
-                    client.post(new Request("readMessages", params));
+                    client.tryPost(new Request("readMessages", params));
                 }
             });
         }
@@ -90,7 +90,9 @@ public class DialogController {
         params.put("text", text);
         params.put("dateTime", LocalDateTime.now().toString());
         Request request = new Request("addMessage", params);
-        client.post(request);
+        if (!client.tryPost(request)) {
+            return;
+        }
         textArea.clear();
         textArea.requestFocus();
         onMessagesRefresh();

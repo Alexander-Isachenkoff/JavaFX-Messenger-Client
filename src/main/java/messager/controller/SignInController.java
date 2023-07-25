@@ -5,7 +5,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
 import messager.client.Client;
 import messager.client.ClientXML;
 import messager.entities.User;
@@ -13,6 +12,9 @@ import messager.requests.Request;
 import messager.requests.TransferableObject;
 import messager.response.SignInResponse;
 import messager.server.Server;
+import messager.view.AlertUtil;
+
+import java.net.SocketTimeoutException;
 
 public class SignInController {
 
@@ -37,17 +39,29 @@ public class SignInController {
     }
 
     private void postLoginData() {
+        responseLabel.setText("");
         TransferableObject params = new TransferableObject();
         params.put("userName", nameField.getText());
         params.put("password", passwordField.getText());
-        client.post(new Request("signIn", params));
+        try {
+            client.post(new Request("signIn", params));
+        } catch (SocketTimeoutException e) {
+            responseLabel.setText("Превышено время ожидания подключения к серверу!");
+            return;
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.showErrorAlert(e.getMessage());
+            return;
+        }
 
         Server server = new Server();
-        SignInResponse response = server.accept(SignInResponse.class);
-
-        if (response.getStatus() != SignInResponse.SignInStatus.OK) {
-            responseLabel.setTextFill(Color.RED);
+        SignInResponse response;
+        try {
+            response = server.accept(SignInResponse.class);
+        } catch (SocketTimeoutException e) {
+            throw new RuntimeException(e);
         }
+
         switch (response.getStatus()) {
             case OK:
                 signIn(response.getUser());

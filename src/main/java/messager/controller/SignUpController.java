@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 import static messager.response.SignUpResponse.SignUpStatus.OK;
 
@@ -68,7 +69,9 @@ public class SignUpController {
             return;
         }
         this.signUpResponse = postSignUpData();
-        showResponse(signUpResponse.getStatus());
+        if (signUpResponse != null) {
+            showResponse(signUpResponse.getStatus());
+        }
     }
 
     private boolean checkPassword() {
@@ -83,9 +86,15 @@ public class SignUpController {
 
     private SignUpResponse postSignUpData() {
         Request request = createSignUpRequest();
-        client.post(request);
+        if (!client.tryPost(request)) {
+            return null;
+        }
         Server server = new Server();
-        return server.accept(SignUpResponse.class);
+        try {
+            return server.accept(SignUpResponse.class);
+        } catch (SocketTimeoutException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Request createSignUpRequest() {

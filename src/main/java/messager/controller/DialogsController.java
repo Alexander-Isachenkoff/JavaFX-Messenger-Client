@@ -35,6 +35,7 @@ import messager.view.NodeUtils;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,8 +64,9 @@ public class DialogsController {
             if (alert.getResult() == ButtonType.YES) {
                 TransferableObject params = new TransferableObject();
                 params.put("dialogId", dialog.getId());
-                new ClientXML().post(new Request("deleteDialog", params));
-                loadDialogs();
+                if (client.tryPost(new Request("deleteDialog", params))) {
+                    loadDialogs();
+                }
             }
         });
         dialogsList.setCellFactory(cellFactory);
@@ -117,8 +119,15 @@ public class DialogsController {
     public void loadDialogs() {
         TransferableObject params = new TransferableObject();
         params.put("userId", user.getId());
-        client.post(new Request("getPersonalDialogs", params));
-        PersonalDialogsResponse response = new Server().accept(PersonalDialogsResponse.class);
+        if (!client.tryPost(new Request("getPersonalDialogs", params))) {
+            return;
+        }
+        PersonalDialogsResponse response;
+        try {
+            response = new Server().accept(PersonalDialogsResponse.class);
+        } catch (SocketTimeoutException e) {
+            throw new RuntimeException(e);
+        }
         dialogsList.setItems(FXCollections.observableArrayList(response.getDialogs()));
     }
 
@@ -138,8 +147,15 @@ public class DialogsController {
                 TransferableObject params = new TransferableObject();
                 params.put("userFromId", user.getId());
                 params.put("userToId", selectedUser.getId());
-                client.post(new Request("addDialog", params));
-                PersonalDialog newDialog = new Server().accept(PersonalDialog.class);
+                if (!client.tryPost(new Request("addDialog", params))) {
+                    return;
+                }
+                PersonalDialog newDialog = null;
+                try {
+                    newDialog = new Server().accept(PersonalDialog.class);
+                } catch (SocketTimeoutException e) {
+                    throw new RuntimeException(e);
+                }
                 dialogsList.getItems().add(newDialog);
                 selectDialog(newDialog);
                 controller.closeWindow();

@@ -91,7 +91,25 @@ public class MainController {
         tab.setContent(load);
     }
 
+    public void showSettingsView() {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/settings.fxml"));
+        Parent load;
+        try {
+            load = fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Tab tab = getCurrentTab();
+        tab.setText("Параметры");
+        tab.setContent(load);
+    }
+
     private Tab getCurrentTab() {
         return tabPane.getSelectionModel().getSelectedItem();
+    }
+
+    @FXML
+    private void onSettings() {
+        showSettingsView();
     }
 }

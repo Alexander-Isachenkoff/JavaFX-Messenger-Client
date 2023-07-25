@@ -1,57 +1,35 @@
 package messager.server;
 
+import lombok.SneakyThrows;
+
 import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 public class Server {
 
     public static final int PORT = 11112;
+    public static final int TIMEOUT = 1000;
     private ServerSocket serverSocket;
 
-    public <T> T accept(Class<T> tClass) {
-        boolean socketCreated = false;
-        do {
-            try {
-                serverSocket = new ServerSocket(PORT);
-                socketCreated = true;
-            } catch (BindException e) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } while (!socketCreated);
-
-        try {
+    @SneakyThrows
+    public <T> T accept(Class<T> tClass) throws SocketTimeoutException {
+        try (ServerSocket socket = new ServerSocket(PORT)) {
+            serverSocket = socket;
+            serverSocket.setSoTimeout(TIMEOUT);
             return getObject(tClass);
-        } catch (IOException | JAXBException e) {
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                serverSocket.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
-    private <T> T getObject(Class<T> tClass) throws IOException, JAXBException {
+    private <T> T getObject(Class<T> tClass) throws IOException {
         Socket incoming = serverSocket.accept();
 
-        T object;
         try (ObjectInputStream ois = new ObjectInputStream(incoming.getInputStream())) {
-            object = JAXB.unmarshal(ois, tClass);
+            return JAXB.unmarshal(ois, tClass);
         }
-
-        return object;
     }
 
 }

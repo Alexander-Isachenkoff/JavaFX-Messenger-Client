@@ -16,6 +16,7 @@ import messager.response.UsersList;
 import messager.server.Server;
 import messager.view.UserListCellFactory;
 
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -93,8 +94,15 @@ public class AddDialogController {
     public void setCurrentUser(User currentUser) {
         TransferableObject params = new TransferableObject();
         params.put("userId", currentUser.getId());
-        client.post(new Request("usersList", params));
-        UsersList response = new Server().accept(UsersList.class);
+        if (!client.tryPost(new Request("usersList", params))) {
+            return;
+        }
+        UsersList response = null;
+        try {
+            response = new Server().accept(UsersList.class);
+        } catch (SocketTimeoutException e) {
+            throw new RuntimeException(e);
+        }
         users = response.getUsers();
         usersListView.setItems(FXCollections.observableList(users));
     }

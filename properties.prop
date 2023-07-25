@@ -1,2 +1,4 @@
-showXml = true
-serverAddress = 127.0.0.1
+#Tue Jul 25 15:55:19 MSK 2023
+serverAddress=127.0.0.1
+showXml=true
+serverPort=11111
