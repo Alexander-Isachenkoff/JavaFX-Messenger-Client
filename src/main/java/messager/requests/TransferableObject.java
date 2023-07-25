@@ -52,7 +52,7 @@ public class TransferableObject {
     }
 
     public String getString(String param) {
-        return String.valueOf(stringMap.get(param));
+        return stringMap.get(param);
     }
 
     public int getInt(String param) {
