@@ -14,6 +14,7 @@ import messager.response.SignInResponse;
 import messager.server.Server;
 import messager.view.AlertUtil;
 
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 public class SignInController {
@@ -54,7 +55,8 @@ public class SignInController {
             return;
         }
 
-        new Server().tryAccept(SignInResponse.class).ifPresent(response -> {
+        try {
+            SignInResponse response = new Server().accept(SignInResponse.class);
             switch (response.getStatus()) {
                 case OK:
                     signIn(response.getUser());
@@ -66,7 +68,11 @@ public class SignInController {
                     responseLabel.setText(String.format("Не зарегистрирован пользователь \"%s\"", nameField.getText()));
                     break;
             }
-        });
+        } catch (SocketTimeoutException e) {
+            responseLabel.setText("Превышено время ожидания ответа от сервера!");
+        } catch (IOException e) {
+            AlertUtil.showErrorAlert(e.getMessage());
+        }
     }
 
     private void signIn(User user) {
