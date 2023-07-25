@@ -15,6 +15,7 @@ public abstract class Client {
 
     protected static final String ADDRESS = AppProperties.instance().getServerAddress();
     protected static final int PORT = AppProperties.instance().getServerPort();
+    private static final int TIMEOUT = AppProperties.instance().getInt("connectionTimeOut");
     private Socket socket;
 
     protected Socket getSocket() throws IOException {
@@ -23,7 +24,7 @@ public abstract class Client {
         }
         if (!socket.isConnected()) {
             try {
-                socket.connect(new InetSocketAddress(ADDRESS, PORT), 1000);
+                socket.connect(new InetSocketAddress(ADDRESS, PORT), TIMEOUT);
             } catch (IOException e) {
                 socket.close();
                 throw e;

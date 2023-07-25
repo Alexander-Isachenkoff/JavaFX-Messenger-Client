@@ -1,4 +1,6 @@
-#Tue Jul 25 15:55:19 MSK 2023
+#Tue Jul 25 18:09:58 MSK 2023
 serverAddress=127.0.0.1
 showXml=true
+responseTimeOut=1000
+connectionTimeOut=1000
 serverPort=11111

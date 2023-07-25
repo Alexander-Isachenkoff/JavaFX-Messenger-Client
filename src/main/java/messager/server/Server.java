@@ -1,6 +1,7 @@
 package messager.server;
 
 import lombok.SneakyThrows;
+import messager.util.AppProperties;
 
 import javax.xml.bind.JAXB;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.net.SocketTimeoutException;
 public class Server {
 
     public static final int PORT = 11112;
-    public static final int TIMEOUT = 1000;
+    public static final int TIMEOUT = AppProperties.instance().getInt("responseTimeOut");
     private ServerSocket serverSocket;
 
     @SneakyThrows

@@ -19,6 +19,8 @@ public final class AppProperties {
         defaultValues.put("serverAddress", "127.0.0.1");
         defaultValues.put("showXml", "true");
         defaultValues.put("serverPort", "11111");
+        defaultValues.put("connectionTimeOut", "1000");
+        defaultValues.put("responseTimeOut", "1000");
     }
 
     private final Properties properties = new Properties();
@@ -84,7 +86,7 @@ public final class AppProperties {
         save();
     }
 
-    String getString(String name) {
+    public String getString(String name) {
         String property = properties.getProperty(name);
         if (property == null) {
             return restoreProperty(name);
@@ -92,7 +94,7 @@ public final class AppProperties {
         return property;
     }
 
-    int getInt(String name) {
+    public int getInt(String name) {
         try {
             return Integer.parseInt(properties.getProperty(name));
         } catch (RuntimeException ex) {
@@ -101,7 +103,7 @@ public final class AppProperties {
         return getInt(name);
     }
 
-    boolean getBoolean(String name) throws UnknownFormatConversionException {
+    public boolean getBoolean(String name) throws UnknownFormatConversionException {
         String property = properties.getProperty(name);
         if ("true".equals(property)) {
             return true;
