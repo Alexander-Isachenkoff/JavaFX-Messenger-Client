@@ -12,12 +12,11 @@ import java.util.Base64;
 public class ImageUtils {
 
     public static String encodeImage(BufferedImage image, String format) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(image, format, baos);
-        baos.flush();
-        String encodedImage = Base64.getEncoder().encodeToString(baos.toByteArray());
-        baos.close();
-        return encodedImage;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            ImageIO.write(image, format, baos);
+            baos.flush();
+            return Base64.getEncoder().encodeToString(baos.toByteArray());
+        }
     }
 
     public static Image decodeImage(String encodedImage) {
