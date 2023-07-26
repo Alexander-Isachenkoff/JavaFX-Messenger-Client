@@ -10,10 +10,18 @@ import java.net.SocketTimeoutException;
 
 public abstract class Client {
 
-    protected static final String ADDRESS = AppProperties.instance().getServerAddress();
     protected static final int PORT = AppProperties.instance().getServerPort();
     private static final int TIMEOUT = AppProperties.instance().getInt("connectionTimeOut");
+    protected final String address;
     private Socket socket;
+
+    public Client() {
+        this(AppProperties.instance().getServerAddress());
+    }
+
+    public Client(String address) {
+        this.address = address;
+    }
 
     protected Socket getSocket() throws IOException {
         if (socket == null || socket.isClosed()) {
@@ -21,7 +29,7 @@ public abstract class Client {
         }
         if (!socket.isConnected()) {
             try {
-                socket.connect(new InetSocketAddress(ADDRESS, PORT), TIMEOUT);
+                socket.connect(new InetSocketAddress(address, PORT), TIMEOUT);
             } catch (IOException e) {
                 socket.close();
                 throw e;

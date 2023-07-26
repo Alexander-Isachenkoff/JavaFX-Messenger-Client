@@ -13,6 +13,14 @@ public class ClientXML extends Client {
 
     private static final boolean SHOW_XML = AppProperties.instance().getShowXml();
 
+    public ClientXML() {
+        super();
+    }
+
+    public ClientXML(String address) {
+        super(address);
+    }
+
     @Override
     public void post(Object object) throws JAXBException, IOException {
         JAXBContext context;
