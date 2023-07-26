@@ -120,7 +120,6 @@
 .dialogs-split-pane .split-pane-divider {
     -fx-background-color: lightgrey;
     -fx-pref-width: 4;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0,0);
 }
 
 .chat-split-pane  {
