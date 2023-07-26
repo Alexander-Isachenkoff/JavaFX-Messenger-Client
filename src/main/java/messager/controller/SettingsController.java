@@ -22,8 +22,8 @@ import java.util.Optional;
 
 public class SettingsController {
 
-    public VBox statusVbox;
-
+    @FXML
+    private VBox statusVbox;
     @FXML
     private TextField ipField;
     @FXML
