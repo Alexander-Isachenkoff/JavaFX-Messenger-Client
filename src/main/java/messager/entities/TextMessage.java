@@ -19,7 +19,7 @@ public class TextMessage {
     @XmlElement
     private User userFrom;
     @XmlAttribute
-    private String message;
+    private String text;
     @XmlAttribute
     private String dateTime;
 

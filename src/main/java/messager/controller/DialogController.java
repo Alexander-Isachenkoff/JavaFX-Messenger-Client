@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 public class DialogController {
 
     private final ClientXML client = new ClientXML();
-    private final ClientServer clientServer = new ClientServer();
     @FXML
     private Circle userImageCircle;
     @FXML
@@ -131,7 +130,7 @@ public class DialogController {
         params.put("userId", currentUser.getId());
         params.put("dialogId", dialog.getId());
         params.put("unreadOnly", true);
-        clientServer.tryPostAndAccept(new Request("getMessages", params), MessagesList.class, onLoad);
+        ClientServer.instance().tryPostAndAccept(new Request("getMessages", params), MessagesList.class, onLoad);
     }
 
     private void loadAllMessages(Consumer<MessagesList> onLoad) {
@@ -139,7 +138,7 @@ public class DialogController {
         params.put("userId", currentUser.getId());
         params.put("dialogId", dialog.getId());
         params.put("unreadOnly", false);
-        clientServer.tryPostAndAccept(new Request("getMessages", params), MessagesList.class, onLoad);
+        ClientServer.instance().tryPostAndAccept(new Request("getMessages", params), MessagesList.class, onLoad);
     }
 
 }

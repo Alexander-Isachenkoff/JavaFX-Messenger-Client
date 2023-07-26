@@ -31,7 +31,7 @@ public class MessageCellController {
     public void setTextMessage(TextMessage textMessage) {
         User userFrom = textMessage.getUserFrom();
         userNameLabel.setText(userFrom.getName());
-        messageText.setText(textMessage.getMessage());
+        messageText.setText(textMessage.getText());
         LocalDateTime time = LocalDateTime.parse(textMessage.getDateTime());
         String format = time.format(TIME_FORMATTER);
         timeLabel.setText(format);

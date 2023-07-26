@@ -41,11 +41,22 @@
 
 .dialogs-list {
     -fx-background-color: #f2f2f2;
-    -fx-border: none;
+    -fx-padding: 0;
+    -fx-border-width: 1 0 0 0;
+    -fx-border-color:  lightgray;
 }
 
-.dialogs-list .list-cell {
-    -fx-background-color: #f2f2f2;
+.dialogs-list:focused {
+    -fx-background-insets: 0;
+}
+
+.dialogs-list .list-cell:filled {
+    -fx-background-color: white;
+}
+
+.dialogs-list .list-cell:filled {
+    -fx-border-color: lightgray;
+    -fx-border-width: 0 0 1 0;
 }
 
 .users-list .list-cell, .dialogs-list .list-cell {
@@ -54,6 +65,7 @@
 }
 
 .users-list .list-cell:empty, .dialogs-list .list-cell:empty {
+    -fx-background-color: #f2f2f2;
     visibility: hidden;
     -fx-cursor: DEFAULT;
 }
@@ -77,11 +89,6 @@
 .dialogs-list .scroll-bar {
     -fx-background-color: none;
 }
-
-.dialogs-list .increment-button, .dialogs-list .decrement-button, .dialogs-list .corner {
-    -fx-background-color: none;
-}
-
 
 .messages-list {
     -fx-background-color: none;
@@ -122,7 +129,7 @@
     -fx-pref-width: 4;
 }
 
-.chat-split-pane  {
+.split-pane  {
     -fx-padding: 0;
     -fx-background-insets: 0;
 }

@@ -3,16 +3,20 @@ package messager.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Circle;
-import messager.entities.CommandDialog;
-import messager.entities.Dialog;
-import messager.entities.PersonalDialog;
-import messager.entities.User;
+import messager.client.ClientServer;
+import messager.entities.*;
+import messager.requests.Request;
+import messager.requests.TransferableObject;
 import messager.view.NodeUtils;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.function.Consumer;
 
 public class DialogCellController {
 
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
     @FXML
     private Label dialogTitle;
     @FXML
@@ -42,6 +46,23 @@ public class DialogCellController {
             dialogTitle.setText(user.getName());
             NodeUtils.setCircleStyle(imageCircle, user);
         }
+        TransferableObject params = new TransferableObject().put("dialogId", dialog.getId());
+        Request request = new Request("getLastMessage", params);
+        ClientServer.instance().tryPostAndAccept(request, TextMessage.class).ifPresent(message -> {
+            String messageText;
+            String timeText;
+            if (message.getId() == 0) {
+                messageText = "Нет сообщений";
+                timeText = "";
+            } else {
+                messageText = message.getText();
+                messageTextLabel.setText(message.getText());
+                LocalDateTime time = LocalDateTime.parse(message.getDateTime());
+                timeText = time.format(TIME_FORMATTER);
+            }
+            messageTextLabel.setText(messageText);
+            timeLabel.setText(timeText);
+        });
     }
 
     @FXML

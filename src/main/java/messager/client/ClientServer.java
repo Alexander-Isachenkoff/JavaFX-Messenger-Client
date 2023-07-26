@@ -10,6 +10,17 @@ public class ClientServer {
 
     private final ClientXML client = new ClientXML();
     private final Server server = new Server();
+    private static ClientServer instance;
+
+    private ClientServer() {
+    }
+
+    public static ClientServer instance() {
+        if (instance == null) {
+            instance = new ClientServer();
+        }
+        return instance;
+    }
 
     public <T> Optional<T> tryPostAndAccept(Object postObject, Class<T> acceptClass) {
         if (!client.tryPost(postObject)) {

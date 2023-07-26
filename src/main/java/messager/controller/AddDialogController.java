@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 public class AddDialogController {
 
-    private final ClientServer clientServer = new ClientServer();
     public Label corner;
     public HBox header;
     @FXML
@@ -91,7 +90,7 @@ public class AddDialogController {
     public void setCurrentUser(User currentUser) {
         TransferableObject params = new TransferableObject().put("userId", currentUser.getId());
         Request request = new Request("usersList", params);
-        clientServer.tryPostAndAccept(request, UsersList.class).ifPresent(usersList -> {
+        ClientServer.instance().tryPostAndAccept(request, UsersList.class).ifPresent(usersList -> {
             users = usersList.getUsers();
             usersListView.setItems(FXCollections.observableList(usersList.getUsers()));
         });

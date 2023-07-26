@@ -40,7 +40,6 @@ import java.util.Map;
 public class DialogsController {
 
     private final ClientXML client = new ClientXML();
-    private final ClientServer clientServer = new ClientServer();
     private final Map<Dialog, Pair<Node, DialogController>> dialogNodeMap = new HashMap<>();
 
     @FXML
@@ -118,7 +117,7 @@ public class DialogsController {
     public void loadDialogs() {
         TransferableObject params = new TransferableObject().put("userId", user.getId());
         Request request = new Request("getPersonalDialogs", params);
-        clientServer.tryPostAndAccept(request, PersonalDialogsResponse.class).ifPresent(response -> {
+        ClientServer.instance().tryPostAndAccept(request, PersonalDialogsResponse.class).ifPresent(response -> {
             dialogsList.setItems(FXCollections.observableArrayList(response.getDialogs()));
         });
     }
@@ -140,7 +139,7 @@ public class DialogsController {
                         .put("userFromId", user.getId())
                         .put("userToId", selectedUser.getId());
                 Request request = new Request("addDialog", params);
-                clientServer.tryPostAndAccept(request, PersonalDialog.class).ifPresent(newDialog -> {
+                ClientServer.instance().tryPostAndAccept(request, PersonalDialog.class).ifPresent(newDialog -> {
                     dialogsList.getItems().add(newDialog);
                     selectDialog(newDialog);
                     controller.closeWindow();
