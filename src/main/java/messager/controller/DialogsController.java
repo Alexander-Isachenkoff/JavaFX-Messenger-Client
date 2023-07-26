@@ -21,7 +21,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.util.Pair;
 import messager.Main;
-import messager.client.Client;
+import messager.client.ClientServer;
 import messager.client.ClientXML;
 import messager.entities.Dialog;
 import messager.entities.PersonalDialog;
@@ -29,7 +29,6 @@ import messager.entities.User;
 import messager.requests.Request;
 import messager.requests.TransferableObject;
 import messager.response.PersonalDialogsResponse;
-import messager.server.Server;
 import messager.view.DialogListCellFactory;
 import messager.view.NodeUtils;
 
@@ -40,7 +39,8 @@ import java.util.Map;
 
 public class DialogsController {
 
-    private final Client client = new ClientXML();
+    private final ClientXML client = new ClientXML();
+    private final ClientServer clientServer = new ClientServer();
     private final Map<Dialog, Pair<Node, DialogController>> dialogNodeMap = new HashMap<>();
 
     @FXML
@@ -116,12 +116,9 @@ public class DialogsController {
     }
 
     public void loadDialogs() {
-        TransferableObject params = new TransferableObject();
-        params.put("userId", user.getId());
-        if (!client.tryPost(new Request("getPersonalDialogs", params))) {
-            return;
-        }
-        new Server().tryAccept(PersonalDialogsResponse.class).ifPresent(response -> {
+        TransferableObject params = new TransferableObject().put("userId", user.getId());
+        Request request = new Request("getPersonalDialogs", params);
+        clientServer.tryPostAndAccept(request, PersonalDialogsResponse.class).ifPresent(response -> {
             dialogsList.setItems(FXCollections.observableArrayList(response.getDialogs()));
         });
     }
@@ -139,13 +136,11 @@ public class DialogsController {
             AddDialogController controller = fxmlLoader.getController();
             controller.setCurrentUser(user);
             controller.setOnUserSelected(selectedUser -> {
-                TransferableObject params = new TransferableObject();
-                params.put("userFromId", user.getId());
-                params.put("userToId", selectedUser.getId());
-                if (!client.tryPost(new Request("addDialog", params))) {
-                    return;
-                }
-                new Server().tryAccept(PersonalDialog.class).ifPresent(newDialog -> {
+                TransferableObject params = new TransferableObject()
+                        .put("userFromId", user.getId())
+                        .put("userToId", selectedUser.getId());
+                Request request = new Request("addDialog", params);
+                clientServer.tryPostAndAccept(request, PersonalDialog.class).ifPresent(newDialog -> {
                     dialogsList.getItems().add(newDialog);
                     selectDialog(newDialog);
                     controller.closeWindow();

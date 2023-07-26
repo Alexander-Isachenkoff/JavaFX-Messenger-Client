@@ -8,7 +8,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Circle;
-import messager.client.Client;
+import messager.client.ClientServer;
 import messager.client.ClientXML;
 import messager.entities.Dialog;
 import messager.entities.PersonalDialog;
@@ -23,13 +23,13 @@ import messager.view.NodeUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class DialogController {
 
-    private final Client client = new ClientXML();
+    private final ClientXML client = new ClientXML();
+    private final ClientServer clientServer = new ClientServer();
     @FXML
     private Circle userImageCircle;
     @FXML
@@ -62,18 +62,16 @@ public class DialogController {
     @FXML
     public void onMessagesRefresh() {
         if (dialog != null) {
-            loadNewMessages(optionalResponse -> {
-                optionalResponse.ifPresent(response -> {
-                    List<TextMessage> messages = response.getMessages();
-                    if (!messages.isEmpty()) {
-                        messagesList.getItems().addAll(messages);
-                        List<Long> readMessagesId = messages.stream().map(TextMessage::getId).collect(Collectors.toList());
-                        TransferableObject params = new TransferableObject();
-                        params.put("userId", currentUser.getId());
-                        params.put("messagesId", StringList.of(readMessagesId));
-                        client.tryPost(new Request("readMessages", params));
-                    }
-                });
+            loadNewMessages(response -> {
+                List<TextMessage> messages = response.getMessages();
+                if (!messages.isEmpty()) {
+                    messagesList.getItems().addAll(messages);
+                    List<Long> readMessagesId = messages.stream().map(TextMessage::getId).collect(Collectors.toList());
+                    TransferableObject params = new TransferableObject();
+                    params.put("userId", currentUser.getId());
+                    params.put("messagesId", StringList.of(readMessagesId));
+                    client.tryPost(new Request("readMessages", params));
+                }
             });
         }
     }
@@ -109,41 +107,39 @@ public class DialogController {
     public void setDialog(Dialog dialog) {
         this.dialog = dialog;
         if (dialog != null) {
-            loadAllMessages(optionalResponse -> {
-                optionalResponse.ifPresent(messagesList -> {
-                    this.messagesList.setItems(FXCollections.observableArrayList(messagesList.getMessages()));
-                    if (dialog instanceof PersonalDialog) {
-                        PersonalDialog personalDialog = (PersonalDialog) dialog;
-                        User userTo;
-                        if (personalDialog.getUser1().getId() == currentUser.getId()) {
-                            userTo = personalDialog.getUser2();
-                        } else {
-                            userTo = personalDialog.getUser1();
-                        }
-                        userNameLabel.setText(userTo.getName());
-                        NodeUtils.setCircleStyle(userImageCircle, userTo);
+            loadAllMessages(response -> {
+                this.messagesList.setItems(FXCollections.observableArrayList(response.getMessages()));
+                if (dialog instanceof PersonalDialog) {
+                    PersonalDialog personalDialog = (PersonalDialog) dialog;
+                    User userTo;
+                    if (personalDialog.getUser1().getId() == currentUser.getId()) {
+                        userTo = personalDialog.getUser2();
+                    } else {
+                        userTo = personalDialog.getUser1();
                     }
-                });
+                    userNameLabel.setText(userTo.getName());
+                    NodeUtils.setCircleStyle(userImageCircle, userTo);
+                }
             });
         } else {
             messagesList.getItems().clear();
         }
     }
 
-    private void loadNewMessages(Consumer<Optional<MessagesList>> onLoad) {
+    private void loadNewMessages(Consumer<MessagesList> onLoad) {
         TransferableObject params = new TransferableObject();
         params.put("userId", currentUser.getId());
         params.put("dialogId", dialog.getId());
         params.put("unreadOnly", true);
-        client.post(new Request("getMessages", params), MessagesList.class, onLoad);
+        clientServer.tryPostAndAccept(new Request("getMessages", params), MessagesList.class, onLoad);
     }
 
-    private void loadAllMessages(Consumer<Optional<MessagesList>> onLoad) {
+    private void loadAllMessages(Consumer<MessagesList> onLoad) {
         TransferableObject params = new TransferableObject();
         params.put("userId", currentUser.getId());
         params.put("dialogId", dialog.getId());
         params.put("unreadOnly", false);
-        client.post(new Request("getMessages", params), MessagesList.class, onLoad);
+        clientServer.tryPostAndAccept(new Request("getMessages", params), MessagesList.class, onLoad);
     }
 
 }

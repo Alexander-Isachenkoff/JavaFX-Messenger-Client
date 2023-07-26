@@ -17,27 +17,28 @@ public class TransferableObject {
     @XmlElement
     private Map<String, StringList> stringListMap;
 
-    public void put(String name, int value) {
-        put(name, String.valueOf(value));
+    public TransferableObject put(String name, int value) {
+        return put(name, String.valueOf(value));
     }
 
-    public void put(String name, long value) {
-        put(name, String.valueOf(value));
+    public TransferableObject put(String name, long value) {
+        return put(name, String.valueOf(value));
     }
 
-    public void put(String name, double value) {
-        put(name, String.valueOf(value));
+    public TransferableObject put(String name, double value) {
+        return put(name, String.valueOf(value));
     }
 
-    public void put(String name, boolean value) {
-        put(name, String.valueOf(value));
+    public TransferableObject put(String name, boolean value) {
+        return put(name, String.valueOf(value));
     }
 
-    public void put(String name, String value) {
+    public TransferableObject put(String name, String value) {
         if (stringMap == null) {
             stringMap = new HashMap<>();
         }
         stringMap.put(name, value);
+        return this;
     }
 
     public void put(String name, TransferableObject object) {

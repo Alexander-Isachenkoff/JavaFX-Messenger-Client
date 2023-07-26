@@ -7,13 +7,11 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import messager.client.Client;
-import messager.client.ClientXML;
+import messager.client.ClientServer;
 import messager.entities.User;
 import messager.requests.Request;
 import messager.requests.TransferableObject;
 import messager.response.UsersList;
-import messager.server.Server;
 import messager.view.UserListCellFactory;
 
 import java.util.List;
@@ -22,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class AddDialogController {
 
-    private final Client client = new ClientXML();
+    private final ClientServer clientServer = new ClientServer();
     public Label corner;
     public HBox header;
     @FXML
@@ -91,12 +89,10 @@ public class AddDialogController {
     }
 
     public void setCurrentUser(User currentUser) {
-        TransferableObject params = new TransferableObject();
-        params.put("userId", currentUser.getId());
-        if (!client.tryPost(new Request("usersList", params))) {
-            return;
-        }
-        new Server().tryAccept(UsersList.class).ifPresent(usersList -> {
+        TransferableObject params = new TransferableObject().put("userId", currentUser.getId());
+        Request request = new Request("usersList", params);
+        clientServer.tryPostAndAccept(request, UsersList.class).ifPresent(usersList -> {
+            users = usersList.getUsers();
             usersListView.setItems(FXCollections.observableList(usersList.getUsers()));
         });
     }
