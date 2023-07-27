@@ -10,24 +10,30 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
 
 <VBox alignment="TOP_RIGHT" prefHeight="360.0" prefWidth="480.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: lightgray; -fx-border-width: 1;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="messager.controller.AddDialogController">
     <children>
           <HBox fx:id="header" alignment="TOP_RIGHT">
               <children>
+            <Label maxWidth="1.7976931348623157E308" text="Новый диалог" HBox.hgrow="ALWAYS">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
                   <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onClose" prefHeight="19.0" prefWidth="19.0" styleClass="tool-button">
                       <graphic>
                           <Group>
                               <children>
-                                  <Line endX="10.0" endY="10.0" styleClass="line" />
-                                  <Line endX="10.0" startY="10.0" styleClass="line" />
+                                  <Line endX="9.0" endY="9.0" styleClass="line" />
+                                  <Line endX="9.0" startY="9.0" styleClass="line" />
                               </children>
                           </Group>
                       </graphic>
                   </Button>
               </children>
               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="10.0" left="11.0" right="10.0" top="10.0" />
               </padding>
           </HBox>
           <VBox spacing="10.0" VBox.vgrow="ALWAYS">
