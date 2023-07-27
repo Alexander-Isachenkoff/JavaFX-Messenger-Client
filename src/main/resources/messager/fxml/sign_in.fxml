@@ -28,8 +28,9 @@
                     <RowConstraints/>
                 </rowConstraints>
             </GridPane>
-            <Label fx:id="responseLabel" text="Label" textFill="RED"/>
-            <Button onAction="#onSignIn" prefWidth="70" text="Войти"/>
+            <Label fx:id="responseLabel" prefHeight="32.0" text="Label" textFill="RED"/>
+            <ProgressIndicator fx:id="progress" prefHeight="32.0" prefWidth="32.0"/>
+            <Button fx:id="signInButton" onAction="#onSignIn" prefWidth="70" text="Войти"/>
 
         </VBox>
         <Button onAction="#onSignUp" text="Регистрация"/>

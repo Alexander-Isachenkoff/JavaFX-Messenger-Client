@@ -14,7 +14,8 @@
             <items>
                 <VBox SplitPane.resizableWithParent="false">
                     <children>
-                        <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: #CEF;">
+                        <HBox alignment="CENTER_LEFT" spacing="10.0"
+                              style="-fx-background-color: #CEF; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 8, 0, 0,0);">
                             <children>
                                 <Circle fx:id="userImageCircle" radius="24.0" stroke="BLACK" strokeType="INSIDE"
                                         strokeWidth="0.0"/>
@@ -47,12 +48,16 @@
                                 <Insets bottom="8.0" left="10.0" right="10.0" top="8.0"/>
                             </padding>
                         </HBox>
-                        <ListView fx:id="dialogsList" styleClass="dialogs-list" VBox.vgrow="ALWAYS"/>
-                        <Button mnemonicParsing="false" onAction="#onRefresh" text="Обновить">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </VBox.margin>
-                        </Button>
+                        <VBox VBox.vgrow="ALWAYS">
+                            <children>
+                                <ListView fx:id="dialogsList" styleClass="dialogs-list" VBox.vgrow="ALWAYS"/>
+                                <Button mnemonicParsing="false" onAction="#onRefresh" text="Обновить">
+                                    <VBox.margin>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </VBox.margin>
+                                </Button>
+                            </children>
+                        </VBox>
                     </children>
                 </VBox>
                 <VBox fx:id="dialogWrapper"/>
