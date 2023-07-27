@@ -7,8 +7,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import messager.client.ClientServer;
 import messager.entities.User;
+import messager.network.ClientServer;
 import messager.requests.Request;
 import messager.requests.TransferableObject;
 import messager.response.UsersList;
@@ -90,7 +90,7 @@ public class AddDialogController {
     public void setCurrentUser(User currentUser) {
         TransferableObject params = new TransferableObject().put("userId", currentUser.getId());
         Request request = new Request("usersList", params);
-        ClientServer.instance().tryPostAndAccept(request, UsersList.class).ifPresent(usersList -> {
+        ClientServer.instance().tryPostAndAccept(request, UsersList.class, usersList -> {
             users = usersList.getUsers();
             usersListView.setItems(FXCollections.observableList(usersList.getUsers()));
         });

@@ -21,11 +21,10 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.util.Pair;
 import messager.Main;
-import messager.client.ClientServer;
-import messager.client.ClientXML;
 import messager.entities.Dialog;
 import messager.entities.PersonalDialog;
 import messager.entities.User;
+import messager.network.ClientServer;
 import messager.requests.Request;
 import messager.requests.TransferableObject;
 import messager.response.PersonalDialogsResponse;
@@ -36,11 +35,12 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class DialogsController {
 
-    private final ClientXML client = new ClientXML();
     private final Map<Dialog, Pair<Node, DialogController>> dialogNodeMap = new HashMap<>();
+    private DialogListCellFactory cellFactory;
 
     @FXML
     private VBox dialogWrapper;
@@ -54,7 +54,7 @@ public class DialogsController {
 
     @FXML
     private void initialize() {
-        DialogListCellFactory cellFactory = new DialogListCellFactory(() -> user); // TODO: 11.07.2023 Переделать доступ к текущему юзеру
+        cellFactory = new DialogListCellFactory(() -> user); // TODO: 11.07.2023 Переделать доступ к текущему юзеру
         cellFactory.setOnDelete(dialog -> {
             String text = String.format("Вы уверены, что хотите удалить диалог \"%s\"?", "dialogTitle.getText()");
             Alert alert = new Alert(Alert.AlertType.INFORMATION, text, ButtonType.YES, ButtonType.NO);
@@ -62,9 +62,12 @@ public class DialogsController {
             if (alert.getResult() == ButtonType.YES) {
                 TransferableObject params = new TransferableObject();
                 params.put("dialogId", dialog.getId());
-                if (client.tryPost(new Request("deleteDialog", params))) {
-                    loadDialogs();
-                }
+                Request request = new Request("deleteDialog", params);
+                ClientServer.instance().tryPost(request, isAccess -> {
+                    if (isAccess) {
+                        reloadDialogs();
+                    }
+                });
             }
         });
         dialogsList.setCellFactory(cellFactory);
@@ -73,15 +76,19 @@ public class DialogsController {
             showDialog(dialog);
         });
 
-        Timer timer = new Timer(5000, actionEvent -> Platform.runLater(() -> {
+        Timer timer = new Timer(2000, actionEvent -> {
             Dialog dialog = dialogsList.getSelectionModel().getSelectedItem();
             if (dialog != null) {
                 DialogController dialogController = dialogNodeMap.get(dialog).getValue();
                 dialogController.onMessagesRefresh();
             }
-        }));
+        });
         timer.setRepeats(true);
         timer.start();
+
+        Timer timer2 = new Timer(2000, actionEvent -> updateDialogs());
+        timer2.setRepeats(true);
+        timer2.start();
     }
 
     private void showDialog(Dialog dialog) {
@@ -111,19 +118,27 @@ public class DialogsController {
 
     @FXML
     private void onRefresh() {
-        loadDialogs();
+        reloadDialogs();
     }
 
-    public void loadDialogs() {
+    public void reloadDialogs() {
+        loadDialogs(response -> dialogsList.setItems(FXCollections.observableArrayList(response.getDialogs())));
+    }
+
+    public void updateDialogs() {
+        for (DialogCellController cellController : cellFactory.getControllerHashMap().values()) {
+            cellController.loadCellData();
+        }
+    }
+
+    public void loadDialogs(Consumer<PersonalDialogsResponse> onLoad) {
         TransferableObject params = new TransferableObject().put("userId", user.getId());
         Request request = new Request("getPersonalDialogs", params);
-        ClientServer.instance().tryPostAndAccept(request, PersonalDialogsResponse.class).ifPresent(response -> {
-            dialogsList.setItems(FXCollections.observableArrayList(response.getDialogs()));
-        });
+        ClientServer.instance().tryPostAndAccept(request, PersonalDialogsResponse.class, onLoad);
     }
 
     public void postInit() {
-        loadDialogs();
+        reloadDialogs();
     }
 
     @FXML
@@ -139,10 +154,12 @@ public class DialogsController {
                         .put("userFromId", user.getId())
                         .put("userToId", selectedUser.getId());
                 Request request = new Request("addDialog", params);
-                ClientServer.instance().tryPostAndAccept(request, PersonalDialog.class).ifPresent(newDialog -> {
-                    dialogsList.getItems().add(newDialog);
-                    selectDialog(newDialog);
-                    controller.closeWindow();
+                ClientServer.instance().tryPostAndAccept(request, PersonalDialog.class, newDialog -> {
+                    Platform.runLater(() -> {
+                        dialogsList.getItems().add(newDialog);
+                        selectDialog(newDialog);
+                        controller.closeWindow();
+                    });
                 });
             });
         } catch (IOException e) {

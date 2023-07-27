@@ -1,10 +1,11 @@
 package messager.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Circle;
-import messager.client.ClientServer;
 import messager.entities.*;
+import messager.network.ClientServer;
 import messager.requests.Request;
 import messager.requests.TransferableObject;
 import messager.view.NodeUtils;
@@ -46,23 +47,31 @@ public class DialogCellController {
             dialogTitle.setText(user.getName());
             NodeUtils.setCircleStyle(imageCircle, user);
         }
+        loadCellData();
+    }
+
+    public void loadCellData() {
         TransferableObject params = new TransferableObject().put("dialogId", dialog.getId());
         Request request = new Request("getLastMessage", params);
-        ClientServer.instance().tryPostAndAccept(request, TextMessage.class).ifPresent(message -> {
-            String messageText;
-            String timeText;
-            if (message.getId() == 0) {
-                messageText = "Нет сообщений";
-                timeText = "";
-            } else {
-                messageText = message.getText();
-                messageTextLabel.setText(message.getText());
-                LocalDateTime time = LocalDateTime.parse(message.getDateTime());
-                timeText = time.format(TIME_FORMATTER);
-            }
-            messageTextLabel.setText(messageText);
-            timeLabel.setText(timeText);
-        });
+        ClientServer.instance().postAndAcceptSilent(request, TextMessage.class,
+                message -> Platform.runLater(() -> setCellData(message))
+        );
+    }
+
+    private void setCellData(TextMessage message) {
+        String messageText;
+        String timeText;
+        if (message.getId() == 0) {
+            messageText = "Нет сообщений";
+            timeText = "";
+        } else {
+            messageText = message.getText();
+            messageTextLabel.setText(message.getText());
+            LocalDateTime time = LocalDateTime.parse(message.getDateTime());
+            timeText = time.format(TIME_FORMATTER);
+        }
+        messageTextLabel.setText(messageText);
+        timeLabel.setText(timeText);
     }
 
     @FXML

@@ -1,5 +1,6 @@
 package messager.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,13 +12,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import messager.client.Client;
-import messager.client.ClientXML;
 import messager.entities.User;
+import messager.network.ClientServer;
 import messager.requests.Request;
 import messager.requests.TransferableObject;
 import messager.response.SignUpResponse;
-import messager.server.Server;
 import messager.util.FileUtils;
 import messager.util.ImageUtils;
 import messager.view.AlertUtil;
@@ -29,13 +28,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.Optional;
+import java.util.function.Consumer;
 
 import static messager.response.SignUpResponse.SignUpStatus.OK;
 
 public class SignUpController {
 
-    private final Client client = new ClientXML();
     public Button signUpButton;
     public Button finishButton;
     @FXML
@@ -75,10 +73,9 @@ public class SignUpController {
         if (!checkPassword()) {
             return;
         }
-        Optional<SignUpResponse> optionalResponse = postSignUpData();
-        optionalResponse.ifPresent(response -> {
+        postSignUpData(response -> {
             this.signUpResponse = response;
-            showStatus(response.getStatus());
+            Platform.runLater(() -> showStatus(response.getStatus()));
         });
     }
 
@@ -106,31 +103,25 @@ public class SignUpController {
         }
     }
 
-    private Optional<SignUpResponse> postSignUpData() {
+    private void postSignUpData(Consumer<SignUpResponse> onResponse) {
         Request request = createSignUpRequest();
-        try {
-            client.post(request);
-        } catch (SocketTimeoutException e) {
-            responseLabel.setTextFill(Color.RED);
-            responseLabel.setText("Превышено время ожидания подключения к серверу!");
-            return Optional.empty();
-        } catch (Exception e) {
-            e.printStackTrace();
-            AlertUtil.showErrorAlert(e.getMessage());
-            return Optional.empty();
-        }
-        try {
-            SignUpResponse response = new Server().accept(SignUpResponse.class);
-            return Optional.of(response);
-        } catch (SocketTimeoutException e) {
-            responseLabel.setTextFill(Color.RED);
-            responseLabel.setText("Превышено время ожидания ответа от сервера!");
-            return Optional.empty();
-        } catch (IOException e) {
-            e.printStackTrace();
-            AlertUtil.showErrorAlert(e.getMessage());
-            return Optional.empty();
-        }
+        ClientServer.instance().postAndAccept(request, SignUpResponse.class, onResponse,
+                e -> {
+                    if (e instanceof SocketTimeoutException) {
+                        responseLabel.setText("Превышено время ожидания подключения к серверу!");
+                    } else {
+                        e.printStackTrace();
+                        AlertUtil.showErrorAlert(e.getMessage());
+                    }
+                },
+                e -> {
+                    if (e instanceof SocketTimeoutException) {
+                        responseLabel.setText("Превышено время ожидания ответа от сервера!");
+                    } else {
+                        e.printStackTrace();
+                        AlertUtil.showErrorAlert(e.getMessage());
+                    }
+                });
     }
 
     private Request createSignUpRequest() {

@@ -1,4 +1,4 @@
-package messager.util;
+package messager.network;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,10 +1,8 @@
-package messager.util;
+package messager.network;
 
-import messager.client.ClientXML;
 import messager.requests.Request;
 import messager.requests.TransferableObject;
 import messager.response.CheckAccessResponse;
-import messager.server.Server;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;

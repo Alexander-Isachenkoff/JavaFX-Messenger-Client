@@ -1,4 +1,4 @@
-package messager.server;
+package messager.network;
 
 import messager.util.AppProperties;
 import messager.view.AlertUtil;
@@ -6,6 +6,7 @@ import messager.view.AlertUtil;
 import javax.xml.bind.JAXB;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -18,14 +19,37 @@ public class Server {
     private ServerSocket serverSocket;
 
     public <T> T accept(Class<T> tClass) throws IOException {
-        try (ServerSocket socket = new ServerSocket(PORT)) {
-            serverSocket = socket;
-            serverSocket.setSoTimeout(TIMEOUT);
+        boolean socketCreated = false;
+        do {
+            try {
+                serverSocket = new ServerSocket(PORT);
+                socketCreated = true;
+            } catch (BindException e) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } while (!socketCreated);
+        try (ServerSocket socket = serverSocket) {
+            socket.setSoTimeout(TIMEOUT);
             return getObject(tClass);
         }
     }
 
-    public <T> Optional<T> tryAccept(Class<T> tClass) {
+    <T> Optional<T> acceptSilent(Class<T> tClass) {
+        try {
+            return Optional.of(accept(tClass));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    <T> Optional<T> tryAccept(Class<T> tClass) {
         try {
             return Optional.of(accept(tClass));
         } catch (SocketTimeoutException e) {

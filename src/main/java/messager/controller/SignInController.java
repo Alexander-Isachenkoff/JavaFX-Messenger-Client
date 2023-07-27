@@ -1,25 +1,22 @@
 package messager.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import messager.client.Client;
-import messager.client.ClientXML;
 import messager.entities.User;
+import messager.network.ClientServer;
 import messager.requests.Request;
 import messager.requests.TransferableObject;
 import messager.response.SignInResponse;
-import messager.server.Server;
 import messager.view.AlertUtil;
 
-import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 public class SignInController {
 
-    private final Client client = new ClientXML();
     @FXML
     private TextField nameField;
     @FXML
@@ -44,27 +41,29 @@ public class SignInController {
         TransferableObject params = new TransferableObject();
         params.put("userName", nameField.getText());
         params.put("password", passwordField.getText());
-        try {
-            client.post(new Request("signIn", params));
-        } catch (SocketTimeoutException e) {
-            responseLabel.setText("Превышено время ожидания подключения к серверу!");
-            return;
-        } catch (Exception e) {
-            e.printStackTrace();
-            AlertUtil.showErrorAlert(e.getMessage());
-            return;
-        }
 
-        SignInResponse response;
-        try {
-            response = new Server().accept(SignInResponse.class);
-        } catch (SocketTimeoutException e) {
-            responseLabel.setText("Превышено время ожидания ответа от сервера!");
-            return;
-        } catch (IOException e) {
-            AlertUtil.showErrorAlert(e.getMessage());
-            return;
-        }
+        Request request = new Request("signIn", params);
+        ClientServer.instance().postAndAccept(request, SignInResponse.class,
+                response -> Platform.runLater(() -> processSignInResponse(response)),
+                e -> {
+                    if (e instanceof SocketTimeoutException) {
+                        responseLabel.setText("Превышено время ожидания подключения к серверу!");
+                    } else {
+                        e.printStackTrace();
+                        AlertUtil.showErrorAlert(e.getMessage());
+                    }
+                },
+                e -> {
+                    if (e instanceof SocketTimeoutException) {
+                        responseLabel.setText("Превышено время ожидания ответа от сервера!");
+                    } else {
+                        e.printStackTrace();
+                        AlertUtil.showErrorAlert(e.getMessage());
+                    }
+                });
+    }
+
+    private void processSignInResponse(SignInResponse response) {
         switch (response.getStatus()) {
             case OK:
                 signIn(response.getUser());
