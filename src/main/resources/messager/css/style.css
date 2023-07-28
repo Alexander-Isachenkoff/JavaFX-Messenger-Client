@@ -81,6 +81,10 @@
     -fx-background-color: rgb(81, 129, 184);
 }
 
+.dialogs-list .list-cell:selected .line {
+    -fx-stroke: white;
+}
+
 .dialogs-list .list-cell:selected .label {
     -fx-text-fill: white;
 }
@@ -138,7 +142,7 @@
 }
 
 .tool-button {
-    -fx-background-color: none;
+    -fx-background-color: rgba(0,0,0,0);
     -fx-padding: 0;
     -fx-font-size: 1;
     -fx-pref-width: 16;
@@ -153,9 +157,9 @@
 }
 
 .tool-button:hover {
-    -fx-background-color: #ccc;
+    -fx-background-color: rgba(0,0,0,0.12);
 }
 
 .tool-button:pressed {
-    -fx-background-color: #bbb;
+    -fx-background-color: rgba(0,0,0,0.2);
 }
