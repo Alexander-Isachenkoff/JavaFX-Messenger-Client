@@ -181,7 +181,6 @@
 .tab-pane .tab:top:selected {
     -fx-background-color: white;
     -fx-border-color: rgb(81, 129, 184);
-    -fx-focus-color: none;
 }
 
 .tab-pane .headers-region {
@@ -210,6 +209,10 @@
 
 .tab-pane .tab:top .tab-label {
     -fx-padding: 0 5;
+}
+
+.tab-pane:focused .tab:selected .focus-indicator {
+    -fx-border-color: none;
 }
 
 .menu-button {
