@@ -2,7 +2,9 @@ package messager.controller;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -22,6 +24,10 @@ import java.util.Optional;
 public class SettingsController {
 
     @FXML
+    private Button searchButton;
+    @FXML
+    private ProgressIndicator progress;
+    @FXML
     private VBox statusVbox;
     @FXML
     private TextField ipField;
@@ -34,6 +40,7 @@ public class SettingsController {
 
     @FXML
     private void initialize() {
+        progress.setVisible(false);
         ipField.setText(AppProperties.instance().getServerAddress());
         portField.setText(String.valueOf(AppProperties.instance().getServerPort()));
         connectionField.setText(AppProperties.instance().getString("connectionTimeOut"));
@@ -89,13 +96,21 @@ public class SettingsController {
 
     @FXML
     private void onSearch() {
-        Optional<String> optional = NetworkUtil.findServerIp();
-        if (optional.isPresent()) {
-            String ip = optional.get();
-            ipField.setText(ip);
-            AlertUtil.showInfoAlert("Сервер найден: " + ip);
-        } else {
-            AlertUtil.showWarningAlert("Не найден сервер!");
-        }
+        progress.setVisible(true);
+        searchButton.setDisable(true);
+        new Thread(() -> {
+            Optional<String> optional = NetworkUtil.findServerIp();
+            Platform.runLater(() -> {
+                progress.setVisible(false);
+                searchButton.setDisable(false);
+                if (optional.isPresent()) {
+                    String ip = optional.get();
+                    ipField.setText(ip);
+                    AlertUtil.showInfoAlert("Сервер найден: " + ip);
+                } else {
+                    AlertUtil.showWarningAlert("Не найден сервер!");
+                }
+            });
+        }).start();
     }
 }

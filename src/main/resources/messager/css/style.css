@@ -228,3 +228,7 @@
     -fx-text-fill: rgb(81, 129, 184);
     -fx-cursor: HAND;
 }
+
+.progress-indicator .segment0, .segment1, .segment2, .segment3, .segment4, .segment5, .segment6, .segment7, .segment8, .segment9, .segment10, .segment11 {
+    -fx-background-color: rgb(81, 129, 184);
+}
