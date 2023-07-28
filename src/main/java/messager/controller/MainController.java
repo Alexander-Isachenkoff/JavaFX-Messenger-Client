@@ -25,28 +25,40 @@ public class MainController {
         return instance;
     }
 
-    @FXML
-    private void initialize() {
-        addSignInTab();
-    }
-
-    @FXML
-    private void onAdd() {
-        addSignInTab();
-    }
-
-    private void addSignInTab() {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/sign_in.fxml"));
+    private static Parent loadView(String s) {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(s));
         Parent load;
         try {
             load = fxmlLoader.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Tab signInTab = new Tab("Вход");
-        signInTab.setContent(load);
-        tabPane.getTabs().add(signInTab);
-        tabPane.getSelectionModel().select(signInTab);
+        return load;
+    }
+
+    @FXML
+    private void initialize() {
+        tabPane.getTabs().removeAll(tabPane.getTabs());
+        Parent load = loadView("fxml/sign_in.fxml");
+        newTab(load, "Вход");
+    }
+
+    @FXML
+    private void onSignIn() {
+        Parent load = loadView("fxml/sign_in.fxml");
+        newTab(load, "Вход");
+    }
+
+    @FXML
+    private void onSignUp() {
+        Parent load = loadView("fxml/sign_up.fxml");
+        newTab(load, "Регистрация");
+    }
+
+    @FXML
+    private void onSettings() {
+        Parent load = loadView("fxml/settings.fxml");
+        newTab(load, "Параметры");
     }
 
     public void showDialogsView(User user) {
@@ -60,56 +72,30 @@ public class MainController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Tab tab = getCurrentTab();
-        tab.setText(user.getName());
-        tab.setContent(load);
+        showOnCurrentTab(user.getName(), load);
     }
 
     public void showSignInView() {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/sign_in.fxml"));
-        Parent load;
-        try {
-            load = fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Tab tab = getCurrentTab();
-        tab.setText("Вход");
-        tab.setContent(load);
+        Parent load = loadView("fxml/sign_in.fxml");
+        showOnCurrentTab("Вход", load);
     }
 
     public void showSignUpView() {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/sign_up.fxml"));
-        Parent load;
-        try {
-            load = fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Tab tab = getCurrentTab();
-        tab.setText("Регистрация");
+        Parent load = loadView("fxml/sign_up.fxml");
+        showOnCurrentTab("Регистрация", load);
+    }
+
+    private void newTab(Parent load, String title) {
+        Tab signInTab = new Tab(title);
+        signInTab.setContent(load);
+        tabPane.getTabs().add(signInTab);
+        tabPane.getSelectionModel().select(signInTab);
+    }
+
+    private void showOnCurrentTab(String user, Parent load) {
+        Tab tab = tabPane.getSelectionModel().getSelectedItem();
+        tab.setText(user);
         tab.setContent(load);
     }
 
-    public void showSettingsView() {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/settings.fxml"));
-        Parent load;
-        try {
-            load = fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Tab tab = getCurrentTab();
-        tab.setText("Параметры");
-        tab.setContent(load);
-    }
-
-    private Tab getCurrentTab() {
-        return tabPane.getSelectionModel().getSelectedItem();
-    }
-
-    @FXML
-    private void onSettings() {
-        showSettingsView();
-    }
 }
