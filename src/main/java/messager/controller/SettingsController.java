@@ -41,8 +41,8 @@ public class SettingsController {
     @FXML
     private void initialize() {
         progress.setVisible(false);
-        ipField.setText(AppProperties.instance().getServerAddress());
-        portField.setText(String.valueOf(AppProperties.instance().getServerPort()));
+        ipField.setText(AppProperties.instance().getString("serverAddress"));
+        portField.setText(String.valueOf(AppProperties.instance().getInt("serverPort")));
         connectionField.setText(AppProperties.instance().getString("connectionTimeOut"));
         responseField.setText(AppProperties.instance().getString("responseTimeOut"));
     }

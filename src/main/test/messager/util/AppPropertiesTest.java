@@ -17,19 +17,19 @@ class AppPropertiesTest {
 
     @Test
     void getShowXml() {
-        boolean showXml = AppProperties.instance().getShowXml();
+        boolean showXml = AppProperties.instance().getBoolean("showXml");
         assertTrue(showXml);
     }
 
     @Test
     void getServerAddress() {
-        String address = AppProperties.instance().getServerAddress();
+        String address = AppProperties.instance().getString("serverAddress");
         assertEquals("127.0.0.1", address);
     }
 
     @Test
     void getServerPort() {
-        int port = AppProperties.instance().getServerPort();
+        int port = AppProperties.instance().getInt("serverPort");
         assertEquals(11111, port);
     }
 
@@ -38,7 +38,7 @@ class AppPropertiesTest {
         AppProperties.instance().setProperty("serverPort", "invalid");
         assertEquals("invalid", AppProperties.instance().getString("serverPort"));
 
-        int port = AppProperties.instance().getServerPort();
+        int port = AppProperties.instance().getInt("serverPort");
         assertEquals(11111, port);
     }
 
@@ -47,8 +47,8 @@ class AppPropertiesTest {
         AppProperties.instance().setProperty("showXml", "invalid");
         assertEquals("invalid", AppProperties.instance().getString("showXml"));
 
-        boolean showXml = AppProperties.instance().getShowXml();
-        assertEquals(true, showXml);
+        boolean showXml = AppProperties.instance().getBoolean("showXml");
+        assertTrue(showXml);
     }
 
 }

@@ -13,8 +13,8 @@ import java.net.Socket;
 
 public class ClientXML extends Client {
 
-    protected static final int PORT = AppProperties.instance().getServerPort();
-    private static final boolean SHOW_XML = AppProperties.instance().getShowXml();
+    protected static final int PORT = AppProperties.instance().getInt("serverPort");
+    private static final boolean SHOW_XML = AppProperties.instance().getBoolean("showXml");
     private static final int TIMEOUT = AppProperties.instance().getInt("connectionTimeOut");
     protected final String address;
     private Socket socket;
@@ -24,7 +24,7 @@ public class ClientXML extends Client {
     }
 
     public ClientXML() {
-        this.address = AppProperties.instance().getServerAddress();
+        this.address = AppProperties.instance().getString("serverAddress");
     }
 
     @Override

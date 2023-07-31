@@ -62,18 +62,6 @@ public final class AppProperties {
         }
     }
 
-    public boolean getShowXml() {
-        return getBoolean("showXml");
-    }
-
-    public String getServerAddress() {
-        return getString("serverAddress");
-    }
-
-    public int getServerPort() {
-        return getInt("serverPort");
-    }
-
     private String restoreProperty(String name) {
         String defaultValue = defaultValues.get(name);
         properties.setProperty(name, defaultValue);
