@@ -9,10 +9,21 @@ import messager.Main;
 import messager.entities.User;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class MainController {
 
+    private static final Map<String, String> nameFxmlMap;
     private static MainController instance;
+
+    static {
+        nameFxmlMap = new HashMap<>();
+        nameFxmlMap.put("Вход", "fxml/sign_in.fxml");
+        nameFxmlMap.put("Регистрация", "fxml/sign_up.fxml");
+        nameFxmlMap.put("Параметры", "fxml/settings.fxml");
+    }
 
     @FXML
     private TabPane tabPane;
@@ -39,26 +50,34 @@ public class MainController {
     @FXML
     private void initialize() {
         tabPane.getTabs().removeAll(tabPane.getTabs());
-        Parent load = loadView("fxml/sign_in.fxml");
-        newTab(load, "Вход");
+        showNewOrSwitchTab("Вход");
     }
 
     @FXML
     private void onSignIn() {
-        Parent load = loadView("fxml/sign_in.fxml");
-        newTab(load, "Вход");
+        showNewOrSwitchTab("Вход");
     }
 
     @FXML
     private void onSignUp() {
-        Parent load = loadView("fxml/sign_up.fxml");
-        newTab(load, "Регистрация");
+        showNewOrSwitchTab("Регистрация");
     }
 
     @FXML
     private void onSettings() {
-        Parent load = loadView("fxml/settings.fxml");
-        newTab(load, "Параметры");
+        showNewOrSwitchTab("Параметры");
+    }
+
+    private void showNewOrSwitchTab(String name) {
+        Optional<Tab> optionalTab = tabPane.getTabs().stream()
+                .filter(tab -> tab.getText().equals(name))
+                .findFirst();
+        if (optionalTab.isPresent()) {
+            tabPane.getSelectionModel().select(optionalTab.get());
+        } else {
+            Parent load = loadView(nameFxmlMap.get(name));
+            newTab(name, load);
+        }
     }
 
     public void showDialogsView(User user) {
@@ -75,26 +94,26 @@ public class MainController {
         showOnCurrentTab(user.getName(), load);
     }
 
-    public void showSignInView() {
-        Parent load = loadView("fxml/sign_in.fxml");
-        showOnCurrentTab("Вход", load);
-    }
-
-    public void showSignUpView() {
-        Parent load = loadView("fxml/sign_up.fxml");
-        showOnCurrentTab("Регистрация", load);
-    }
-
-    private void newTab(Parent load, String title) {
+    private void newTab(String title, Parent load) {
         Tab signInTab = new Tab(title);
         signInTab.setContent(load);
         tabPane.getTabs().add(signInTab);
         tabPane.getSelectionModel().select(signInTab);
     }
 
-    private void showOnCurrentTab(String user, Parent load) {
+    public void showSignInView() {
+        Parent load = loadView(nameFxmlMap.get("Вход"));
+        showOnCurrentTab("Вход", load);
+    }
+
+    public void showSignUpView() {
+        Parent load = loadView(nameFxmlMap.get("Регистрация"));
+        showOnCurrentTab("Регистрация", load);
+    }
+
+    private void showOnCurrentTab(String title, Parent load) {
         Tab tab = tabPane.getSelectionModel().getSelectedItem();
-        tab.setText(user);
+        tab.setText(title);
         tab.setContent(load);
     }
 
