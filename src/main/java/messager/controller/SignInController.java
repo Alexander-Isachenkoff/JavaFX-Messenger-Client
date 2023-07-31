@@ -10,11 +10,15 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import messager.entities.User;
 import messager.network.ClientServer;
+import messager.network.ClientXML;
+import messager.network.Server;
 import messager.requests.Request;
 import messager.requests.TransferableObject;
 import messager.response.SignInResponse;
 import messager.view.AlertUtil;
 
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 
@@ -51,33 +55,36 @@ public class SignInController {
         setLoadingState(true);
 
         Request request = new Request("signIn", params);
-        ClientServer.instance().postAndAccept(request, SignInResponse.class,
-                response -> Platform.runLater(() -> {
-                    processSignInResponse(response);
-                    setLoadingState(false);
-                }),
-                e -> {
-                    Platform.runLater(() -> {
-                        if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                            responseLabel.setText("Превышено время ожидания подключения к серверу!");
-                        } else {
-                            e.printStackTrace();
-                            AlertUtil.showErrorAlert(e.getMessage());
-                        }
-                        setLoadingState(false);
-                    });
-                },
-                e -> {
-                    Platform.runLater(() -> {
-                        if (e instanceof SocketTimeoutException) {
-                            responseLabel.setText("Превышено время ожидания ответа от сервера!");
-                        } else {
-                            e.printStackTrace();
-                            AlertUtil.showErrorAlert(e.getMessage());
-                        }
-                        setLoadingState(false);
-                    });
+        ClientServer.runLater(() -> {
+            try {
+                new ClientXML().post(request);
+            } catch (SocketTimeoutException | ConnectException e) {
+                Platform.runLater(() -> {
+                    responseLabel.setText("Превышено время ожидания подключения к серверу!");
                 });
+                return;
+            } catch (IOException | JAXBException e) {
+                e.printStackTrace();
+                AlertUtil.showErrorAlert(e.getMessage());
+            } finally {
+                setLoadingState(false);
+            }
+            try {
+                SignInResponse response = new Server().accept(SignInResponse.class);
+                Platform.runLater(() -> {
+                    processSignInResponse(response);
+                });
+            } catch (SocketTimeoutException e) {
+                Platform.runLater(() -> {
+                    responseLabel.setText("Превышено время ожидания ответа от сервера!");
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+                AlertUtil.showErrorAlert(e.getMessage());
+            } finally {
+                setLoadingState(false);
+            }
+        });
     }
 
     private void processSignInResponse(SignInResponse response) {

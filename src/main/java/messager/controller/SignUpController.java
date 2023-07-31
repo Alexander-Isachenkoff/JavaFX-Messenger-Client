@@ -2,10 +2,7 @@ package messager.controller;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -14,6 +11,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import messager.entities.User;
 import messager.network.ClientServer;
+import messager.network.ClientXML;
+import messager.network.Server;
 import messager.requests.Request;
 import messager.requests.TransferableObject;
 import messager.response.SignUpResponse;
@@ -22,11 +21,13 @@ import messager.util.ImageUtils;
 import messager.view.AlertUtil;
 
 import javax.imageio.ImageIO;
+import javax.xml.bind.JAXBException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.function.Consumer;
 
@@ -34,8 +35,12 @@ import static messager.response.SignUpResponse.SignUpStatus.OK;
 
 public class SignUpController {
 
-    public Button signUpButton;
-    public Button finishButton;
+    @FXML
+    private Button signUpButton;
+    @FXML
+    private Button finishButton;
+    @FXML
+    private ProgressIndicator progress;
     @FXML
     private GridPane inputPane;
     @FXML
@@ -62,6 +67,7 @@ public class SignUpController {
         signUpButton.setManaged(true);
         finishButton.setVisible(false);
         finishButton.setManaged(false);
+        setLoadingState(false);
     }
 
     @FXML
@@ -105,23 +111,46 @@ public class SignUpController {
 
     private void postSignUpData(Consumer<SignUpResponse> onResponse) {
         Request request = createSignUpRequest();
-        ClientServer.instance().postAndAccept(request, SignUpResponse.class, onResponse,
-                e -> {
-                    if (e instanceof SocketTimeoutException) {
-                        responseLabel.setText("Превышено время ожидания подключения к серверу!");
-                    } else {
-                        e.printStackTrace();
-                        AlertUtil.showErrorAlert(e.getMessage());
-                    }
-                },
-                e -> {
-                    if (e instanceof SocketTimeoutException) {
-                        responseLabel.setText("Превышено время ожидания ответа от сервера!");
-                    } else {
-                        e.printStackTrace();
-                        AlertUtil.showErrorAlert(e.getMessage());
-                    }
+        setLoadingState(true);
+        ClientServer.runLater(() -> {
+            try {
+                new ClientXML().post(request);
+            } catch (SocketTimeoutException | ConnectException e) {
+                Platform.runLater(() -> {
+                    responseLabel.setTextFill(Color.RED);
+                    responseLabel.setText("Превышено время ожидания подключения к серверу!");
                 });
+                return;
+            } catch (IOException | JAXBException e) {
+                e.printStackTrace();
+                AlertUtil.showErrorAlert(e.getMessage());
+                return;
+            } finally {
+                setLoadingState(false);
+            }
+            try {
+                SignUpResponse response = new Server().accept(SignUpResponse.class);
+                onResponse.accept(response);
+            } catch (SocketTimeoutException e) {
+                Platform.runLater(() -> {
+                    responseLabel.setTextFill(Color.RED);
+                    responseLabel.setText("Превышено время ожидания ответа от сервера!");
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+                AlertUtil.showErrorAlert(e.getMessage());
+            } finally {
+                setLoadingState(false);
+            }
+        });
+    }
+
+    private void setLoadingState(boolean loading) {
+        responseLabel.setVisible(!loading);
+        responseLabel.setManaged(!loading);
+        progress.setVisible(loading);
+        progress.setManaged(loading);
+        signUpButton.setDisable(loading);
     }
 
     private Request createSignUpRequest() {
