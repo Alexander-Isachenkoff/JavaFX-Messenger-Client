@@ -2,64 +2,59 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Polyline?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
-<VBox alignment="TOP_CENTER" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.171"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="messager.controller.MessageCellController">
+
+<VBox alignment="TOP_CENTER" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="messager.controller.MessageCellController">
     <children>
         <HBox maxWidth="720.0" spacing="10.0" styleClass="my_message">
             <children>
-                <Circle fx:id="imageCircle" radius="16.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0"/>
-                <HBox alignment="BOTTOM_LEFT" spacing="5.0" styleClass="message">
+                <Circle fx:id="imageCircle" radius="16.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                <HBox alignment="BOTTOM_LEFT" nodeOrientation="LEFT_TO_RIGHT" spacing="5.0" styleClass="message">
                     <children>
                         <VBox maxWidth="480.0" minWidth="120.0" nodeOrientation="LEFT_TO_RIGHT" spacing="5.0">
                             <children>
                                 <Label fx:id="userNameLabel" text="Имя Пользователя">
                                     <font>
-                                        <Font name="System Bold" size="12.0"/>
+                                        <Font name="System Bold" size="12.0" />
                                     </font>
                                 </Label>
                                 <TextFlow>
                                     <children>
-                                        <Text fx:id="messageText" fontSmoothingType="LCD" strokeType="OUTSIDE"
-                                              strokeWidth="0.0" text="setLoadingState(false);"/>
+                                        <Text fx:id="messageText" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="setLoadingState(false);" />
                                     </children>
                                 </TextFlow>
                             </children>
                         </VBox>
                         <HBox alignment="BOTTOM_LEFT">
                             <children>
-                                <Polyline fx:id="readCheck" fill="#80ff0000"
-                                          points="105.16956329345703, -5.207177639007568, 100.37867736816406, 0.25, 98.9840087890625, -2.98068904876709"
-                                          stroke="#7cda60" strokeLineJoin="ROUND" strokeWidth="2.0"/>
-                                <Polyline fx:id="postedCheck" fill="#80ff0000"
-                                          points="105.16956329345703, -5.207177639007568, 100.37867736816406, 0.25, 98.9840087890625, -2.98068904876709"
-                                          stroke="#7cda60" strokeLineJoin="ROUND" strokeWidth="2.0">
+                                <Polyline fx:id="readCheck" fill="#80ff0000" points="105.16956329345703, -5.207177639007568, 100.37867736816406, 0.25, 98.9840087890625, -2.98068904876709" stroke="#7cda60" strokeLineJoin="ROUND" strokeWidth="2.0" />
+                                <Polyline fx:id="postedCheck" fill="#80ff0000" points="105.16956329345703, -5.207177639007568, 100.37867736816406, 0.25, 98.9840087890625, -2.98068904876709" stroke="#7cda60" strokeLineJoin="ROUND" strokeWidth="2.0">
                                     <HBox.margin>
-                                        <Insets left="-6.0"/>
+                                        <Insets left="-6.0" />
                                     </HBox.margin>
                                 </Polyline>
                             </children>
                             <HBox.margin>
-                                <Insets bottom="-5.0" right="-5.0"/>
+                                <Insets bottom="-5.0" right="-5.0" />
                             </HBox.margin>
                         </HBox>
                     </children>
                 </HBox>
                 <VBox alignment="BOTTOM_LEFT">
                     <children>
-                        <Label fx:id="timeLabel" minWidth="-Infinity" styleClass="time-label" text="10:30"
-                               textFill="GREY"/>
+                        <Label fx:id="timeLabel" minWidth="-Infinity" styleClass="time-label" text="10:30" textFill="GREY" />
                     </children>
                 </VBox>
             </children>
         </HBox>
     </children>
     <padding>
-        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
     </padding>
 </VBox>

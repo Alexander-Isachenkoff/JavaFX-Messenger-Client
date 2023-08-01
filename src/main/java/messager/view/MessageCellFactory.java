@@ -1,7 +1,6 @@
 package messager.view;
 
 import javafx.geometry.NodeOrientation;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import messager.controller.MessageCellController;
 import messager.entities.TextMessage;
@@ -32,8 +31,6 @@ public class MessageCellFactory extends FxmlListCellFactory<TextMessage, Message
         Parent centeredMessageWrapper = (Parent) cell.getChildrenUnmodifiable().get(0);
         centeredMessageWrapper.getStyleClass().add(styleClass);
         centeredMessageWrapper.setNodeOrientation(orientation);
-        Node message = centeredMessageWrapper.getChildrenUnmodifiable().get(1);
-        message.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
     }
 
     @Override
