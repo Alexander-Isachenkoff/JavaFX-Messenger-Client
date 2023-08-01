@@ -89,6 +89,16 @@ public class DialogsController {
         Timer timer2 = new Timer(2000, actionEvent -> updateDialogs());
         timer2.setRepeats(true);
         timer2.start();
+
+        Timer timer3 = new Timer(2000, actionEvent -> {
+            Dialog dialog = dialogsList.getSelectionModel().getSelectedItem();
+            if (dialog != null) {
+                DialogController dialogController = dialogNodeMap.get(dialog).getValue();
+                dialogController.updateMessagesState();
+            }
+        });
+        timer3.setRepeats(true);
+        timer3.start();
     }
 
     private void showDialog(Dialog dialog) {

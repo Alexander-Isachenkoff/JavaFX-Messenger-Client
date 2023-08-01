@@ -1,7 +1,7 @@
 package messager.controller;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -23,6 +23,7 @@ import messager.view.NodeUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -67,14 +68,52 @@ public class DialogController {
                 }
                 if (!messages.isEmpty()) {
                     Platform.runLater(() -> messagesList.getItems().addAll(messages));
-                    List<Long> readMessagesId = messages.stream().map(TextMessage::getId).collect(Collectors.toList());
-                    TransferableObject params = new TransferableObject();
-                    params.put("userId", currentUser.getId());
-                    params.put("messagesId", StringList.of(readMessagesId));
-                    ClientServer.instance().tryPost(new Request("readMessages", params), isAccess -> {
-                    });
+                    postReadMessages(messages);
                 }
             });
+        }
+    }
+
+    private void postReadMessages(List<TextMessage> messages) {
+        List<Long> readMessagesId = messages.stream().map(TextMessage::getId).collect(Collectors.toList());
+        TransferableObject params = new TransferableObject();
+        params.put("userId", currentUser.getId());
+        params.put("messagesId", StringList.of(readMessagesId));
+        ClientServer.instance().tryPost(new Request("readMessages", params), isAccess -> {
+        });
+    }
+
+    public void updateMessagesState() {
+        TransferableObject params = new TransferableObject()
+                .put("dialogId", dialog.getId())
+                .put("userId", currentUser.getId());
+        Request request = new Request("getReadMessages", params);
+        ClientServer.instance().postAndAcceptSilent(request, MessagesList.class, messagesList -> {
+            List<TextMessage> updatedMessages = messagesList.getMessages();
+            if (updatedMessages.isEmpty()) {
+                return;
+            }
+            Platform.runLater(() -> replaceMessages(updatedMessages));
+
+            List<Long> readMessagesId = updatedMessages.stream().map(TextMessage::getId).collect(Collectors.toList());
+            TransferableObject backParams = new TransferableObject();
+            backParams.put("userId", currentUser.getId());
+            backParams.put("messagesId", StringList.of(readMessagesId));
+            ClientServer.instance().tryPost(new Request("updateAccepted", backParams), isAccess -> {
+            });
+        });
+    }
+
+    private void replaceMessages(List<TextMessage> newMessages) {
+        ObservableList<TextMessage> viewMessages = this.messagesList.getItems();
+        for (int i = 0; i < viewMessages.size(); i++) {
+            TextMessage textMessage = viewMessages.get(i);
+            Optional<TextMessage> opt = newMessages.stream()
+                    .filter(message -> message.getId() == textMessage.getId())
+                    .findFirst();
+            if (opt.isPresent()) {
+                viewMessages.set(i, opt.get());
+            }
         }
     }
 
@@ -112,24 +151,32 @@ public class DialogController {
     public void setDialog(Dialog dialog) {
         this.dialog = dialog;
         if (dialog != null) {
-            loadAllMessages(response -> {
-                this.messagesList.setItems(FXCollections.observableArrayList(response.getMessages()));
-                if (dialog instanceof PersonalDialog) {
-                    PersonalDialog personalDialog = (PersonalDialog) dialog;
-                    User userTo;
-                    if (personalDialog.getUser1().getId() == currentUser.getId()) {
-                        userTo = personalDialog.getUser2();
-                    } else {
-                        userTo = personalDialog.getUser1();
-                    }
-                    Platform.runLater(() -> {
-                        userNameLabel.setText(userTo.getName());
-                        NodeUtils.setCircleStyle(userImageCircle, userTo);
-                    });
-                }
+            initDialogHeader(dialog);
+            loadOldMessages(response -> {
+                this.messagesList.getItems().setAll(response.getMessages());
+            });
+            loadNewMessages(response -> {
+                this.messagesList.getItems().addAll(response.getMessages());
+                postReadMessages(response.getMessages());
             });
         } else {
             messagesList.getItems().clear();
+        }
+    }
+
+    private void initDialogHeader(Dialog dialog) {
+        if (dialog instanceof PersonalDialog) {
+            PersonalDialog personalDialog = (PersonalDialog) dialog;
+            User userTo;
+            if (personalDialog.getUser1().getId() == currentUser.getId()) {
+                userTo = personalDialog.getUser2();
+            } else {
+                userTo = personalDialog.getUser1();
+            }
+            Platform.runLater(() -> {
+                userNameLabel.setText(userTo.getName());
+                NodeUtils.setCircleStyle(userImageCircle, userTo);
+            });
         }
     }
 
@@ -139,6 +186,13 @@ public class DialogController {
 
     private void loadAllMessages(Consumer<MessagesList> onLoad) {
         loadMessages(false, onLoad);
+    }
+
+    private void loadOldMessages(Consumer<MessagesList> onLoad) {
+        TransferableObject params = new TransferableObject();
+        params.put("userId", currentUser.getId());
+        params.put("dialogId", dialog.getId());
+        ClientServer.instance().postAndAcceptSilent(new Request("getOldMessages", params), MessagesList.class, onLoad);
     }
 
     private void loadMessages(boolean unreadOnly, Consumer<MessagesList> onLoad) {

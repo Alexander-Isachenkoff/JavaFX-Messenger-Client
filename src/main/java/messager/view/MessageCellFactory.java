@@ -38,6 +38,6 @@ public class MessageCellFactory extends FxmlListCellFactory<TextMessage, Message
 
     @Override
     public void initController(TextMessage message, MessageCellController controller) {
-        controller.setTextMessage(message);
+        controller.setMessage(message);
     }
 }

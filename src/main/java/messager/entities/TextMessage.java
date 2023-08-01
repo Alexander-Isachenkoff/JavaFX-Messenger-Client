@@ -1,5 +1,6 @@
 package messager.entities;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,5 +23,7 @@ public class TextMessage {
     private String text;
     @XmlAttribute
     private String dateTime;
+
+    public SimpleBooleanProperty readProperty = new SimpleBooleanProperty(false);
 
 }
