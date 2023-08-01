@@ -19,8 +19,8 @@ public final class AppProperties {
         defaultValues.put("serverAddress", "127.0.0.1");
         defaultValues.put("showXml", "true");
         defaultValues.put("serverPort", "11111");
-        defaultValues.put("connectionTimeOut", "1000");
-        defaultValues.put("responseTimeOut", "1000");
+        defaultValues.put("connectionTimeOut", "5000");
+        defaultValues.put("responseTimeOut", "5000");
     }
 
     private final Properties properties = new Properties();

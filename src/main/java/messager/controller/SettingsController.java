@@ -84,6 +84,11 @@ public class SettingsController {
             }
             try {
                 new Server().accept(CheckAccessResponse.class);
+                Platform.runLater(() -> {
+                    Label label = new Label("Соединение с сервером установлено!");
+                    label.setTextFill(Color.GREEN);
+                    statusVbox.getChildren().add(label);
+                });
             } catch (SocketTimeoutException e) {
                 Platform.runLater(() -> {
                     Label label2 = new Label("Превышено время ожидания ответа от сервера!");
