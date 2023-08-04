@@ -1,10 +1,12 @@
 package messager.controller;
 
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -16,11 +18,9 @@ import messager.network.Server;
 import messager.requests.Request;
 import messager.requests.TransferableObject;
 import messager.response.SignUpResponse;
-import messager.util.FileUtils;
 import messager.util.ImageUtils;
 import messager.view.AlertUtil;
 
-import javax.imageio.ImageIO;
 import javax.xml.bind.JAXBException;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -56,7 +56,6 @@ public class SignUpController {
     @FXML
     private Label responseLabel;
 
-    private File imageFile;
     private SignUpResponse signUpResponse;
 
     @FXML
@@ -156,15 +155,16 @@ public class SignUpController {
     private Request createSignUpRequest() {
         String encodedImage = null;
         String imageFormat = null;
-        if (imageFile != null) {
+        if (imageView.getImage() != null) {
             try {
-                BufferedImage image = ImageIO.read(imageFile);
-                imageFormat = FileUtils.getExtension(imageFile);
+                BufferedImage image = SwingFXUtils.fromFXImage(imageView.getImage(), null);
+                imageFormat = "png";
                 encodedImage = ImageUtils.encodeImage(image, imageFormat);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
+
         TransferableObject params = new TransferableObject();
         params.put("userName", nameField.getText());
         params.put("password", passwordField.getText());
@@ -207,14 +207,17 @@ public class SignUpController {
         if (file == null) {
             return;
         }
-        this.imageFile = file;
         Image image;
         try {
             image = new Image(new FileInputStream(file));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        imageView.setImage(image);
+
+        ImageCropController.show(image, getStage(), rect -> {
+            WritableImage crop = new WritableImage(image.getPixelReader(), rect.x, rect.y, rect.width, rect.height);
+            imageView.setImage(crop);
+        });
     }
 
     private Stage getStage() {
