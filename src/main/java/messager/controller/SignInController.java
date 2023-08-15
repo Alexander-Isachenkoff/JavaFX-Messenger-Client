@@ -49,7 +49,7 @@ public class SignInController {
     private void postLoginData() {
         responseLabel.setText("");
         TransferableObject params = new TransferableObject();
-        params.put("userName", nameField.getText());
+        params.put("login", nameField.getText());
         params.put("password", passwordField.getText());
 
         setLoadingState(true);

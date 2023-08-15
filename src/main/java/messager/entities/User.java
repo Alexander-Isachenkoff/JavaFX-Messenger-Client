@@ -16,6 +16,8 @@ public class User {
     @XmlElement
     private long id;
     @XmlElement
+    private String login;
+    @XmlElement
     private String name;
     @XmlElement
     private String encodedImage;

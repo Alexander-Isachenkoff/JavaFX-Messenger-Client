@@ -19,16 +19,19 @@
                 <children>
 
                     <GridPane fx:id="inputPane" hgap="8" vgap="8">
-                        <Label minWidth="-Infinity" text="Имя" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                        <Label minWidth="-Infinity" text="Пароль" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                        <TextField fx:id="nameField" prefWidth="200.0" promptText="Имя" GridPane.columnIndex="3"
+                        <Label minWidth="-Infinity" text="Логин" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                        <Label minWidth="-Infinity" text="Пароль" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+                        <TextField fx:id="loginField" prefWidth="200.0" promptText="Логин" GridPane.columnIndex="3"
                                    GridPane.hgrow="ALWAYS" GridPane.rowIndex="1"/>
+                        <Label minWidth="-Infinity" text="Имя" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                        <TextField fx:id="nameField" prefWidth="200.0" promptText="Имя" GridPane.columnIndex="3"
+                                   GridPane.rowIndex="2"/>
                         <PasswordField fx:id="passwordField" prefWidth="200.0" promptText="Пароль"
-                                       GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2"/>
+                                       GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3"/>
                         <Label minWidth="-Infinity" text="Подтверждение " GridPane.columnIndex="2"
-                               GridPane.rowIndex="3"/>
+                               GridPane.rowIndex="4"/>
                         <PasswordField fx:id="passwordApprovalField" prefWidth="200.0" promptText="Подтверждение пароля"
-                                       GridPane.columnIndex="3" GridPane.rowIndex="3"/>
+                                       GridPane.columnIndex="3" GridPane.rowIndex="4"/>
                         <StackPane
                                 style="-fx-border-color: lightgray; -fx-background-color: #e7eef7; -fx-background-color: #fafafa; -fx-border-radius: 10; -fx-background-radius: 10;"
                                 GridPane.rowIndex="1" GridPane.rowSpan="2147483647">
@@ -58,7 +61,7 @@
                         </StackPane>
                         <Label text="Фото" GridPane.halignment="CENTER"/>
                         <Label fx:id="checkLabel" text="Пароли не совпадают" textFill="RED" GridPane.columnIndex="2"
-                               GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="4"/>
+                               GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="5"/>
                         <columnConstraints>
                             <ColumnConstraints/>
                             <ColumnConstraints prefWidth="20.0"/>
@@ -66,6 +69,7 @@
                             <ColumnConstraints fillWidth="false" halignment="CENTER"/>
                         </columnConstraints>
                         <rowConstraints>
+                            <RowConstraints/>
                             <RowConstraints/>
                             <RowConstraints/>
                             <RowConstraints/>

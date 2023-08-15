@@ -46,6 +46,8 @@ public class SignUpController {
     @FXML
     private ImageView imageView;
     @FXML
+    private TextField loginField;
+    @FXML
     private TextField nameField;
     @FXML
     private TextField passwordField;
@@ -85,8 +87,12 @@ public class SignUpController {
     }
 
     private boolean checkLogin() {
+        if (loginField.getText().trim().isEmpty()) {
+            checkLabel.setText("Поле \"Логин\" не должно быть пустым");
+            return false;
+        }
         if (nameField.getText().trim().isEmpty()) {
-            checkLabel.setText("Имя пользователя не должно быть пустым");
+            checkLabel.setText("Поле \"Имя пользователя\" не должно быть пустым");
             return false;
         } else {
             checkLabel.setText("");
@@ -96,7 +102,7 @@ public class SignUpController {
 
     private boolean checkPassword() {
         if (passwordField.getText().trim().isEmpty()) {
-            checkLabel.setText("Пароль не должен быть пустым");
+            checkLabel.setText("Поле \"Пароль\" не должно быть пустым");
             return false;
         }
         if (!passwordField.getText().equals(passwordApprovalField.getText())) {
@@ -166,6 +172,7 @@ public class SignUpController {
         }
 
         TransferableObject params = new TransferableObject();
+        params.put("login", loginField.getText());
         params.put("userName", nameField.getText());
         params.put("password", passwordField.getText());
         params.put("encodedImage", encodedImage);
@@ -181,7 +188,7 @@ public class SignUpController {
         }
         switch (status) {
             case OK:
-                responseLabel.setText(String.format("Пользователь \"%s\" успешно зарегистрирован", nameField.getText()));
+                responseLabel.setText(String.format("Пользователь \"%s\" успешно зарегистрирован", loginField.getText()));
                 inputPane.setDisable(true);
                 signUpButton.setVisible(false);
                 signUpButton.setManaged(false);
@@ -189,7 +196,7 @@ public class SignUpController {
                 finishButton.setManaged(true);
                 break;
             case USER_ALREADY_EXISTS:
-                responseLabel.setText(String.format("Пользователь с именем \"%s\" уже зарегистрирован", nameField.getText()));
+                responseLabel.setText(String.format("Пользователь с именем \"%s\" уже зарегистрирован", loginField.getText()));
                 break;
         }
     }
