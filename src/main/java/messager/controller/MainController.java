@@ -23,6 +23,7 @@ public class MainController {
         nameFxmlMap.put("Вход", "fxml/sign_in.fxml");
         nameFxmlMap.put("Регистрация", "fxml/sign_up.fxml");
         nameFxmlMap.put("Параметры", "fxml/settings.fxml");
+        nameFxmlMap.put("Изменить данные пользователя", "fxml/user_page.fxml");
     }
 
     @FXML
@@ -109,6 +110,19 @@ public class MainController {
     public void showSignUpView() {
         Parent load = loadView(nameFxmlMap.get("Регистрация"));
         showOnCurrentTab("Регистрация", load);
+    }
+
+    public void showUserView(User user) {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("fxml/user_page.fxml"));
+        Parent load;
+        try {
+            load = fxmlLoader.load();
+            UserEditController controller = fxmlLoader.getController();
+            controller.setUser(user);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        newTab("Данные \"" + user.getLogin() + "\n", load);
     }
 
     private void showOnCurrentTab(String title, Parent load) {

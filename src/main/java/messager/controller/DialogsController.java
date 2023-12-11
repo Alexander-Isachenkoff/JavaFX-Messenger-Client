@@ -7,10 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -40,6 +37,7 @@ import java.util.function.Consumer;
 public class DialogsController {
 
     private final Map<Dialog, Pair<Node, DialogController>> dialogNodeMap = new HashMap<>();
+
     private DialogListCellFactory cellFactory;
 
     @FXML
@@ -50,10 +48,16 @@ public class DialogsController {
     private Label userNameLabel;
     @FXML
     private ListView<Dialog> dialogsList;
+    @FXML
+    private Button contextMenuButton;
     private User user;
 
     @FXML
     private void initialize() {
+        contextMenuButton.setOnMouseClicked(event -> {
+            contextMenuButton.getContextMenu().show(contextMenuButton, event.getScreenX(), event.getScreenY());
+        });
+
         cellFactory = new DialogListCellFactory(() -> user); // TODO: 11.07.2023 Переделать доступ к текущему юзеру
         cellFactory.setOnDelete(dialog -> {
             String text = String.format("Вы уверены, что хотите удалить диалог \"%s\"?", "dialogTitle.getText()");
@@ -192,4 +196,10 @@ public class DialogsController {
         userNameLabel.setText(user.getName());
         NodeUtils.setCircleStyle(userImageCircle, user);
     }
+
+    @FXML
+    private void onEditUser() {
+        MainController.getInstance().showUserView(user);
+    }
+
 }

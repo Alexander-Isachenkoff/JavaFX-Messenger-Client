@@ -127,7 +127,7 @@
     -fx-background-color: #EFC;
 }
 
-.dialogs-split-pane .split-pane-divider {
+.split-pane .split-pane-divider {
     -fx-background-color: lightgrey;
     -fx-pref-width: 4;
 }
